@@ -2,7 +2,7 @@
 
 This plan outlines a systematic approach to saturating the Mum_Finance codebase with robust tests, targeting >95% coverage and high resilience.
 
-## Phase 1: Foundation & Utilities (The Building Blocks)
+## Phase 1: Foundation & Utilities (The Building Blocks) [checkpoint: 375abae]
 Focus: Achieving 100% coverage and robustness for the lowest-level helper functions.
 
 - [x] Task: Audit and Expand Utility Tests (`lib/utils/`)
@@ -14,7 +14,7 @@ Focus: Achieving 100% coverage and robustness for the lowest-level helper functi
     - [x] Write tests for `index.ts` (PapaParse wrapper) with malformed CSV headers.
     - [x] Write tests for empty CSV files and files with massive transaction counts.
     - [x] Write tests for CSVs with missing expected columns (e.g., no 'Date' column).
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Utilities' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Utilities' (Protocol in workflow.md)
 
 ## Phase 2: State Management & Logic Engines (The Core)
 Focus: Testing the brain of the application—categorization and state transitions.
