@@ -43,7 +43,7 @@ Focus: Ensuring the visual layer is resilient and correctly reflects the underly
     - [x] Implement a test for "Recurring Bill Management": Identification -> User Override -> State Update.
 - [x] Task: Conductor - User Manual Verification 'Phase 3: UI Components & User Flows' (Protocol in workflow.md)
 
-## Phase 4: Final Validation & Cleanup
+## Phase 4: Final Validation & Cleanup [checkpoint: 3f0d6b6]
 Focus: Ensuring the global coverage target is met and all "flaky" logic is removed.
 
 - [x] Task: Global Coverage Audit
@@ -52,6 +52,4 @@ Focus: Ensuring the global coverage target is met and all "flaky" logic is remov
 - [x] Task: Resilience & Performance Check
     - [x] Review all tests for timing dependencies (mocking `Date.now()`).
     - [x] Optimize slow-running tests.
-    - [ ] Review all tests for timing dependencies (mocking `Date.now()`).
-    - [ ] Optimize slow-running tests.
 - [x] Task: Conductor - User Manual Verification 'Phase 4: Final Validation & Cleanup' (Protocol in workflow.md)
