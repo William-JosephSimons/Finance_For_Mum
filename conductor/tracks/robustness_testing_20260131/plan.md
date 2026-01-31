@@ -46,7 +46,7 @@ Focus: Ensuring the visual layer is resilient and correctly reflects the underly
 ## Phase 4: Final Validation & Cleanup
 Focus: Ensuring the global coverage target is met and all "flaky" logic is removed.
 
-- [ ] Task: Global Coverage Audit
+- [~] Task: Global Coverage Audit
     - [ ] Run full coverage report and identify any remaining "red" lines.
     - [ ] Address any gaps to ensure >95% total coverage.
 - [ ] Task: Resilience & Performance Check

@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">71.42% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>5/7</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>5/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">71.42% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>5/7</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -181,7 +181,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -221,7 +221,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -230,7 +230,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -239,7 +239,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -248,7 +248,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -276,8 +276,8 @@ function <span class="fstat-no" title="function not covered" >TabIcon(</span>{ n
   );
 }
 &nbsp;
-export default function <span class="fstat-no" title="function not covered" >TabLayout(</span>) {
-<span class="cstat-no" title="statement not covered" >  return (</span>
+export default function TabLayout() {
+  return (
     &lt;Tabs
       screenOptions={{
         headerShown: false,
@@ -316,8 +316,8 @@ export default function <span class="fstat-no" title="function not covered" >Tab
         name="index"
         options={{
           title: "Dashboard",
-          tabBarIcon: <span class="fstat-no" title="function not covered" >({</span> focused }) =&gt; (
-<span class="cstat-no" title="statement not covered" >            &lt;TabIcon name="home" focused={focused} /&gt;</span>
+          tabBarIcon: ({ focused }) =&gt; (
+            &lt;TabIcon name="home" focused={focused} /&gt;
           ),
         }}
       /&gt;
@@ -325,8 +325,8 @@ export default function <span class="fstat-no" title="function not covered" >Tab
         name="transactions"
         options={{
           title: "Transactions",
-          tabBarIcon: <span class="fstat-no" title="function not covered" >({</span> focused }) =&gt; (
-<span class="cstat-no" title="statement not covered" >            &lt;TabIcon name="list" focused={focused} /&gt;</span>
+          tabBarIcon: ({ focused }) =&gt; (
+            &lt;TabIcon name="list" focused={focused} /&gt;
           ),
         }}
       /&gt;
@@ -334,8 +334,8 @@ export default function <span class="fstat-no" title="function not covered" >Tab
         name="calendar"
         options={{
           title: "Bills",
-          tabBarIcon: <span class="fstat-no" title="function not covered" >({</span> focused }) =&gt; (
-<span class="cstat-no" title="statement not covered" >            &lt;TabIcon name="calendar" focused={focused} /&gt;</span>
+          tabBarIcon: ({ focused }) =&gt; (
+            &lt;TabIcon name="calendar" focused={focused} /&gt;
           ),
         }}
       /&gt;
@@ -343,8 +343,8 @@ export default function <span class="fstat-no" title="function not covered" >Tab
         name="insights"
         options={{
           title: "Insights",
-          tabBarIcon: <span class="fstat-no" title="function not covered" >({</span> focused }) =&gt; (
-<span class="cstat-no" title="statement not covered" >            &lt;TabIcon name="insights" focused={focused} /&gt;</span>
+          tabBarIcon: ({ focused }) =&gt; (
+            &lt;TabIcon name="insights" focused={focused} /&gt;
           ),
         }}
       /&gt;
@@ -358,7 +358,7 @@ export default function <span class="fstat-no" title="function not covered" >Tab
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-31T10:46:50.614Z
+                at 2026-01-31T10:52:08.327Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

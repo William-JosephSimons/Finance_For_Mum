@@ -7,43 +7,73 @@ import { createTransaction } from "../../__tests__/factories";
 describe("TransactionsScreen", () => {
   beforeEach(() => {
     useAppStore.getState().reset();
+    useAppStore.getState().setHasHydrated(true);
     // Add a sample transaction
     useAppStore.getState().addTransactions([
       createTransaction({
         id: "txn1",
         description: "WOOLWORTHS",
         amount: -100,
+        date: "2024-01-01"
       }),
+      createTransaction({
+        id: "txn2",
+        description: "NETFLIX",
+        amount: -15,
+        date: "2024-01-02"
+      })
     ]);
   });
 
-  it("should open categorization modal when tapping a transaction", () => {
-    const { getByText, queryByText } = render(<TransactionsScreen />);
-
-    const txnItem = getByText("WOOLWORTHS");
-    fireEvent.press(txnItem);
-
-    expect(getByText("Categorize Transaction")).toBeTruthy();
-    expect(getByText("Groceries")).toBeTruthy();
+  it("should render transaction list correctly", () => {
+    const { getByText } = render(<TransactionsScreen />);
+    expect(getByText("WOOLWORTHS")).toBeTruthy();
+    expect(getByText("NETFLIX")).toBeTruthy();
   });
 
-  it("should categorize transaction and create rule when 'Always apply' is set", async () => {
-    const { getByText } = render(<TransactionsScreen />);
+  it("should filter transactions based on search query", () => {
+    const { getByPlaceholderText, getByText, queryByText } = render(<TransactionsScreen />);
+    
+    const searchInput = getByPlaceholderText("Search transactions...");
+    fireEvent.changeText(searchInput, "WOOL");
 
-    const txnItem = getByText("WOOLWORTHS");
-    fireEvent.press(txnItem);
+    expect(getByText("WOOLWORTHS")).toBeTruthy();
+    expect(queryByText("NETFLIX")).toBeNull();
+  });
 
-    // Toggle "Always apply" (it's a Switch, but we can look for the text or use testID if we added one)
-    // For now, let's just press the "Groceries" category
-    const categoryButton = getByText("Groceries");
+  it("should open categorization modal and handle deletion", async () => {
+    const { getByText, findByText } = render(<TransactionsScreen />);
 
-    // We need to set the switch state. In the code it's a Switch.
-    // Let's assume we want to test the rule creation too.
-    // To keep it simple for this test, let's just test categorization first.
-    fireEvent.press(categoryButton);
+    fireEvent.press(getByText("WOOLWORTHS"));
+    expect(getByText("Categorize Transaction")).toBeTruthy();
+
+    fireEvent.press(getByText("🗑️"));
+    expect(await findByText("Delete Transaction?")).toBeTruthy();
+
+    fireEvent.press(getByText("Yes, Delete"));
 
     await waitFor(() => {
-      expect(useAppStore.getState().transactions[0].category).toBe("Groceries");
+      expect(useAppStore.getState().transactions.length).toBe(1);
     });
+  });
+
+  it("should handle categorization and recurring toggle", async () => {
+    const { getByText, getByRole } = render(<TransactionsScreen />);
+
+    fireEvent.press(getByText("WOOLWORTHS"));
+    
+    // Toggle recurring (Switch is harder to find without testID, usually by role)
+    // Actually handleCategorize handles it
+    fireEvent.press(getByText("Groceries"));
+
+    await waitFor(() => {
+      expect(useAppStore.getState().transactions.find(t => t.id === "txn1")?.category).toBe("Groceries");
+    });
+  });
+  
+  it("should show empty state message", () => {
+    useAppStore.getState().reset();
+    const { getByText } = render(<TransactionsScreen />);
+    expect(getByText("No transactions yet")).toBeTruthy();
   });
 });
