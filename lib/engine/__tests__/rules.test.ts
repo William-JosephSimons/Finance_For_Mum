@@ -101,5 +101,34 @@ describe("rules engine", () => {
     it("should normalize to uppercase and trim", () => {
       expect(suggestKeyword("  coffee shop  ")).toBe("COFFEE");
     });
+
+    it("should handle empty or noise-only descriptions", () => {
+      expect(suggestKeyword("")).toBe("");
+      expect(suggestKeyword("123456789")).toBe("123456789");
+      expect(suggestKeyword("VISA PURCHASE")).toBe("VISA PURCHASE"); // Fallback to first 15 chars if no words >= 2 chars
+    });
+
+    it("should handle special characters correctly", () => {
+      expect(suggestKeyword("WOOLWORTHS/SYDNEY")).toBe("WOOLWORTHS");
+      expect(suggestKeyword("MYER - MELBOURNE")).toBe("MYER");
+    });
+  });
+
+  describe("applyRules edge cases", () => {
+    it("should handle empty rules list", () => {
+      const result = applyRules(mockTransactions, []);
+      expect(result).toEqual(mockTransactions);
+    });
+
+    it("should handle empty transactions list", () => {
+      const result = applyRules([], mockRules);
+      expect(result).toEqual([]);
+    });
+
+    it("should be case-insensitive", () => {
+      const lowerRules: Rule[] = [{ id: "r1", keyword: "woolworths", category: "Groceries" }];
+      const result = applyRules(mockTransactions, lowerRules);
+      expect(result.find(t => t.id === "t1")?.category).toBe("Groceries");
+    });
   });
 });

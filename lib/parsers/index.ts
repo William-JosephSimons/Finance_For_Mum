@@ -124,10 +124,15 @@ function parseAusDate(dateStr: string): string {
 
 /**
  * Generates a unique ID for a transaction.
- * Uses a simple hash of date + amount + description for deduplication.
+ * Uses a simple hash of date + amount + description + balance (if available).
  */
-function generateId(date: string, amount: number, description: string): string {
-  const input = `${date}|${amount.toFixed(2)}|${description}`;
+function generateId(
+  date: string,
+  amount: number,
+  description: string,
+  balance?: number,
+): string {
+  const input = `${date}|${amount.toFixed(2)}|${description}${balance !== undefined ? `|${balance.toFixed(2)}` : ""}`;
   let hash = 0;
   for (let i = 0; i < input.length; i++) {
     hash = (hash << 5) - hash + input.charCodeAt(i);
@@ -160,11 +165,14 @@ function parseCommBank(rows: RawRow[]): {
 
       const date = parseAusDate(dateCol);
       const amount = parseFloat(amountCol.replace(/[,$]/g, ""));
+      const balanceStr = row["Balance"] || row["balance"] || "";
+      const balance =
+        balanceStr ? parseFloat(balanceStr.replace(/[,$]/g, "")) : undefined;
 
       if (isNaN(amount)) return null;
 
       return {
-        id: generateId(date, amount, descCol),
+        id: generateId(date, amount, descCol, balance),
         date,
         amount,
         description: descCol.trim(),
@@ -230,8 +238,12 @@ function parseNAB(rows: RawRow[]): {
 
       if (isNaN(amount) || amount === 0) return null;
 
+      const balanceStr = row["Balance"] || row["balance"] || "";
+      const balance =
+        balanceStr ? parseFloat(balanceStr.replace(/[,$]/g, "")) : undefined;
+
       return {
-        id: generateId(date, amount, descCol),
+        id: generateId(date, amount, descCol, balance),
         date,
         amount,
         description: descCol.trim(),
@@ -290,8 +302,12 @@ function parseWestpac(rows: RawRow[]): {
 
       if (isNaN(amount) || amount === 0) return null;
 
+      const balanceStr = row["Balance"] || row["balance"] || "";
+      const balance =
+        balanceStr ? parseFloat(balanceStr.replace(/[,$]/g, "")) : undefined;
+
       return {
-        id: generateId(date, amount, descCol),
+        id: generateId(date, amount, descCol, balance),
         date,
         amount,
         description: descCol.trim(),
@@ -352,8 +368,12 @@ function parseANZ(rows: RawRow[]): {
 
       if (isNaN(amount) || amount === 0) return null;
 
+      const balanceStr = row["Balance"] || row["balance"] || "";
+      const balance =
+        balanceStr ? parseFloat(balanceStr.replace(/[,$]/g, "")) : undefined;
+
       return {
-        id: generateId(date, amount, descCol),
+        id: generateId(date, amount, descCol, balance),
         date,
         amount,
         description: descCol.trim(),
@@ -398,11 +418,14 @@ function parseSuncorp(csvContent: string): {
 
       const date = parseAusDate(dateCol);
       const amount = parseFloat(amountCol.replace(/[,$]/g, ""));
+      const balanceStr = row[3]; // Balance is index 3
+      const balance =
+        balanceStr ? parseFloat(balanceStr.replace(/[,$]/g, "")) : undefined;
 
       if (isNaN(amount)) return null;
 
       return {
-        id: generateId(date, amount, descCol || ""),
+        id: generateId(date, amount, descCol || "", balance),
         date,
         amount,
         description: (descCol || "").trim(),

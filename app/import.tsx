@@ -20,6 +20,7 @@ export default function ImportScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<{
     count: number;
+    duplicates: number;
     bank: string;
     total: number;
   } | null>(null);
@@ -68,7 +69,8 @@ export default function ImportScreen() {
       }
 
       // Add to store
-      addTransactions(parseResult.transactions);
+      const addedCount = addTransactions(parseResult.transactions);
+      const duplicateCount = parseResult.transactions.length - addedCount;
 
       // Trigger background analysis (async)
       reapplyRules();
@@ -85,7 +87,8 @@ export default function ImportScreen() {
       );
 
       setResult({
-        count: parseResult.transactions.length,
+        count: addedCount,
+        duplicates: duplicateCount,
         bank: BANK_NAMES[parseResult.bank],
         total,
       });
@@ -201,12 +204,22 @@ export default function ImportScreen() {
               </View>
               <View className="flex-row justify-between">
                 <Text className="text-muted dark:text-muted-dark font-medium">
-                  Transactions
+                  New Transactions
                 </Text>
-                <Text className="text-accent dark:text-accent-dark font-bold">
+                <Text className="text-positive font-bold">
                   {result.count}
                 </Text>
               </View>
+              {result.duplicates > 0 && (
+                <View className="flex-row justify-between">
+                  <Text className="text-muted dark:text-muted-dark font-medium">
+                    Duplicates Ignored
+                  </Text>
+                  <Text className="text-muted dark:text-muted-dark font-bold">
+                    {result.duplicates}
+                  </Text>
+                </View>
+              )}
               <View className="flex-row justify-between pt-2 border-t border-positive/10">
                 <Text className="text-muted dark:text-muted-dark font-medium">
                   Net Value

@@ -2,8 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { applyRules, Category } from "../engine/rules";
-import { analyzeBatch } from "../engine/llm";
+import { runCategorizationWorkflow } from "../engine/categorization";
 
 // ============================================================================
 // Types
@@ -38,7 +37,7 @@ export interface AppState {
 }
 
 export interface AppActions {
-  addTransactions: (txns: Transaction[]) => void;
+  addTransactions: (txns: Transaction[]) => number;
   updateTransaction: (id: string, updates: Partial<Transaction>) => void;
   deleteTransaction: (id: string) => void;
   addRule: (rule: Rule) => void;
@@ -54,6 +53,16 @@ export interface AppActions {
   importState: (data: Partial<AppState>) => void;
   exportState: () => AppState;
 }
+
+// ============================================================================
+// Helpers
+// ============================================================================
+
+const sortTransactions = (txns: Transaction[]) => {
+  return [...txns].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  );
+};
 
 // ============================================================================
 // Initial State
@@ -84,23 +93,23 @@ export const useAppStore = create<AppState & AppActions>()(
           state._hasHydrated = val;
         }),
 
-      addTransactions: (txns) =>
+      addTransactions: (txns) => {
+        let count = 0;
         set((state) => {
           const existingIds = new Set(state.transactions.map((t) => t.id));
           const newTxns = txns.filter((t) => !existingIds.has(t.id));
+          count = newTxns.length;
           state.transactions.push(...newTxns);
-          // Sort by date descending
-          state.transactions.sort(
-            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-          );
-        }),
+          state.transactions = sortTransactions(state.transactions);
+        });
+        return count;
+      },
 
       updateTransaction: (id, updates) =>
         set((state) => {
           const index = state.transactions.findIndex((t) => t.id === id);
           if (index !== -1) {
-            const txn = state.transactions[index];
-            Object.assign(txn, updates);
+            Object.assign(state.transactions[index], updates);
           }
         }),
 
@@ -111,10 +120,13 @@ export const useAppStore = create<AppState & AppActions>()(
 
       addRule: (rule) =>
         set((state) => {
-          // Ensure keyword is uppercase
+          const upperKeyword = rule.keyword.toUpperCase();
+          const exists = state.rules.some((r) => r.keyword === upperKeyword);
+          if (exists) return;
+
           state.rules.push({
             ...rule,
-            keyword: rule.keyword.toUpperCase(),
+            keyword: upperKeyword,
           });
         }),
 
@@ -155,44 +167,20 @@ export const useAppStore = create<AppState & AppActions>()(
         });
 
         try {
-          const state = get();
-
-          // 1. Apply explicit rules first (sync)
-          let txns = applyRules(state.transactions, state.rules);
-          set((state) => {
-            state.transactions = txns;
-          });
-
-          // 2. Identify remaining Uncategorized for LLM
-          const uncategorized = txns.filter(
-            (t) => t.category === "Uncategorized",
-          );
-
-          if (uncategorized.length === 0) {
-            set((state) => {
-              state.isAnalyzing = false;
-            });
-            return;
-          }
-
-          // Analyze with LLM
-          const results = await analyzeBatch(
-            uncategorized,
-            // (completed, total) => console.log(`Analyzed ${completed}/${total}`)
+          const { transactions, rules } = get();
+          const updatedTxns = await runCategorizationWorkflow(
+            transactions,
+            rules,
+            {
+              onUpdate: (txns) =>
+                set((state) => {
+                  state.transactions = txns;
+                }),
+            },
           );
 
           set((state) => {
-            state.transactions.forEach((txn) => {
-              if (results.has(txn.id)) {
-                const analysis = results.get(txn.id)!;
-                txn.category = analysis.category;
-
-                // Also update other metadata if plausible
-                if (analysis.isSubscription) txn.isRecurring = true;
-                if (analysis.cleanMerchantName)
-                  txn.merchantName = analysis.cleanMerchantName;
-              }
-            });
+            state.transactions = updatedTxns;
             state.isAnalyzing = false;
           });
         } catch (error) {
@@ -223,6 +211,7 @@ export const useAppStore = create<AppState & AppActions>()(
           reapplyRules,
           importState,
           exportState,
+          setHasHydrated,
           ...state
         } = get();
         return state as AppState;

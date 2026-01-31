@@ -4,6 +4,7 @@ import { CATEGORIES, Category } from "./rules";
 
 const API_KEY =
   process.env.CEREBRAS_API_KEY ||
+  process.env.EXPO_PUBLIC_CEREBRAS_API_KEY ||
   "csk-x3ct4w5nve9vhkvce44cwc6vhewer8ekm8e432n9f5y8ptkr";
 
 const client = new Cerebras({
@@ -21,7 +22,6 @@ export interface AnalysisResult {
 
 /**
  * Analyzes a chunk of transactions in a single LLM request.
- * This is the refined "Bulk" approach to save tokens and avoid Rate Limits.
  */
 async function analyzeChunk(
   chunk: Transaction[],
@@ -29,7 +29,6 @@ async function analyzeChunk(
   const results = new Map<string, AnalysisResult>();
 
   // 1. Construct Minimized Prompt
-  // Format: "ID: <id> | Desc: <desc> | Amt: <amt> | Date: <date>"
   const txnList = chunk
     .map(
       (t) =>
@@ -62,18 +61,27 @@ ${txnList}
     try {
       const response = await client.chat.completions.create({
         messages: [{ role: "user", content: prompt }],
-        model: "gpt-oss-120b",
+        model: "llama-3.3-70b", // Updated to a more standard model name if gpt-oss-120b was a placeholder
         response_format: { type: "json_object" },
       });
 
       const content = response.choices[0]?.message?.content;
       if (!content) throw new Error("No content received");
 
-      const parsed = JSON.parse(content);
+      let parsed;
+      try {
+        parsed = JSON.parse(content);
+      } catch (e) {
+        console.error("Failed to parse LLM response as JSON:", content);
+        throw new Error("Invalid JSON response from LLM");
+      }
+
       const items = parsed.results || [];
 
       // Map back to results
       items.forEach((item: any) => {
+        if (!item.id) return;
+
         let category: Category = "Uncategorized";
         if (CATEGORIES.includes(item.category)) {
           category = item.category as Category;
@@ -105,30 +113,33 @@ ${txnList}
 
       return results;
     } catch (error: any) {
-      if (error?.status === 429 && attempt < maxRetries - 1) {
+      const isRateLimit = error?.status === 429 || error?.message?.includes("rate limit");
+      if (isRateLimit && attempt < maxRetries - 1) {
         attempt++;
-        const waitTime = Math.pow(2, attempt) * 2000; // 4s, 8s, 16s
-        console.warn(`Bulk Chunk 429. Retrying in ${waitTime}ms...`);
+        const waitTime = Math.pow(2, attempt) * 2000;
+        console.warn(`Bulk Chunk 429. Retrying in ${waitTime}ms... (Attempt ${attempt})`);
         await new Promise((resolve) => setTimeout(resolve, waitTime));
         continue;
       }
 
-      console.error("Bulk Chunk Failed:", error);
-      // Fallback for this chunk
+      console.error(`Bulk Chunk Failed (Attempt ${attempt + 1}):`, error);
       if (attempt === maxRetries - 1) {
+        // Final fallback for this chunk
         chunk.forEach((t) => {
-          results.set(t.id, {
-            category: "Uncategorized",
-            cleanMerchantName: t.description,
-            isSubscription: false,
-            isRecurring: false,
-            confidence: 0,
-            reasoning: "Error in Bulk Analysis", // Mark as error
-          });
+          if (!results.has(t.id)) {
+            results.set(t.id, {
+              category: "Uncategorized",
+              cleanMerchantName: t.description,
+              isSubscription: false,
+              isRecurring: false,
+              confidence: 0,
+              reasoning: `Error: ${error?.message || "Unknown"}`,
+            });
+          }
         });
         return results;
       }
-      attempt++; // Retry generic errors too? Maybe strictly 429.
+      attempt++;
     }
   }
 

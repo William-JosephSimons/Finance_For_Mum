@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for lib/utils/format.ts</title>
+    <title>Code coverage report for lib/engine/categorization.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">lib/utils</a> format.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">lib/engine</a> categorization.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/15</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/12</span>
+                <span class='fraction'>6/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">41.66% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/12</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -107,23 +107,16 @@
 <a name='L42'></a><a href='#L42'>42</a>
 <a name='L43'></a><a href='#L43'>43</a>
 <a name='L44'></a><a href='#L44'>44</a>
-<a name='L45'></a><a href='#L45'>45</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">35x</span>
-<span class="cline-any cline-yes">35x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">35x</span>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -131,8 +124,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -140,60 +131,96 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { format } from "date-fns";
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Transaction, Rule } from "../store";
+import { applyRules } from "./rules";
+import { analyzeBatch, AnalysisResult } from "./llm";
 &nbsp;
-/**
- * Formats a number as Australian currency.
- * @example formatCurrency(1200.50) =&gt; "$1,200.50"
- */
-export function formatCurrency(amount: number): string {
-  const absAmount = Math.abs(amount);
-  const formatted = new Intl.NumberFormat("en-AU", {
-    style: "currency",
-    currency: "AUD",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(absAmount);
-&nbsp;
-  // Handle negative amounts
-  return amount &lt; 0 ? `-${formatted}` : formatted;
+export interface CategorizationWorkflowOptions {
+  onProgress?: (completed: number, total: number) =&gt; void;
+  onUpdate?: (txns: Transaction[]) =&gt; void;
 }
 &nbsp;
 /**
- * Formats a date as DD/MM/YYYY (Australian standard).
- * @example formatDate("2024-01-15") =&gt; "15/01/2024"
+ * Orchestrates the full categorization workflow:
+ * 1. Apply explicit user-defined rules.
+ * 2. Send remaining Uncategorized transactions to LLM for batch analysis.
  */
-export function formatDate(date: Date | string): string {
-  const d = typeof date === "string" ? new Date(date) : <span class="branch-1 cbranch-no" title="branch not covered" >date;</span>
-  return format(d, "dd/MM/yyyy");
-}
+export async function runCategorizationWorkflow(
+  transactions: Transaction[],
+  rules: Rule[],
+  options?: CategorizationWorkflowOptions,
+): Promise&lt;Transaction[]&gt; {
+  // 1. Apply explicit rules first (sync)
+  let currentTxns = applyRules(transactions, rules);
+  options?.onUpdate?.(currentTxns);
 &nbsp;
-/**
- * Formats a date as a relative string.
- * @example formatRelativeDate(new Date()) =&gt; "Today"
- */
-export function <span class="fstat-no" title="function not covered" >formatRelativeDate(</span>date: Date | string): string {
-  const d = <span class="cstat-no" title="statement not covered" >typeof date === "string" ? new Date(date) : date;</span>
-  const now = <span class="cstat-no" title="statement not covered" >new Date();</span>
-  const diffDays = <span class="cstat-no" title="statement not covered" >Math.floor(</span>
-    (now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24),
+  // 2. Identify remaining Uncategorized for LLM
+  const uncategorized = currentTxns.filter((t) =&gt; t.category === "Uncategorized");
+&nbsp;
+  if (uncategorized.length === 0) {
+    return currentTxns;
+  }
+&nbsp;
+  // 3. Analyze with LLM
+  const results = await analyzeBatch(
+    uncategorized,
+    20, // batch size
+    options?.onProgress,
   );
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if (diffDays === 0) <span class="cstat-no" title="statement not covered" >return "Today";</span></span>
-<span class="cstat-no" title="statement not covered" >  if (diffDays === 1) <span class="cstat-no" title="statement not covered" >return "Yesterday";</span></span>
-<span class="cstat-no" title="statement not covered" >  if (diffDays &lt; 7) <span class="cstat-no" title="statement not covered" >return `${diffDays} days ago`;</span></span>
-<span class="cstat-no" title="statement not covered" >  return formatDate(d);</span>
+  // 4. Merge results back
+  const updatedTxns = currentTxns.map((txn) =&gt; {
+    const analysis = results.get(txn.id);
+    if (analysis) {
+      return {
+        ...txn,
+        category: analysis.category,
+        isRecurring: analysis.isSubscription || <span class="branch-1 cbranch-no" title="branch not covered" >txn.isRecurring,</span>
+        merchantName: analysis.cleanMerchantName || <span class="branch-1 cbranch-no" title="branch not covered" >txn.merchantName,</span>
+      };
+    }
+    return txn;
+  });
+&nbsp;
+  return updatedTxns;
 }
 &nbsp;</pre></td></tr></table></pre>
 

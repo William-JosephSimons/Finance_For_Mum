@@ -50,8 +50,9 @@ export function detectSurcharges(
 
     const upperDesc = txn.description.toUpperCase();
     return (
-      SURCHARGE_KEYWORDS.some((kw) => upperDesc.includes(kw)) ||
-      txn.category === "Fees & Charges"
+      SURCHARGE_KEYWORDS.some((kw) =>
+        txn.description.toUpperCase().includes(kw),
+      ) || txn.category === "Merchant Card Fees & Surcharges"
     );
   });
 

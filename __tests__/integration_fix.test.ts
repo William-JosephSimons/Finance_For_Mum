@@ -34,10 +34,9 @@ describe("Integration Fixes", () => {
       description: "ATM WITHDRAWAL FEE",
       amount: -2.5, // Expense
       date: "2026-01-20T00:00:00.000Z",
-      category: "Fees & Charges", // LLM applied this
-      isRecurring: false,
-    };
-
+          category: "Merchant Card Fees & Surcharges", // LLM applied this
+          isRecurring: false,
+        };
     const feeTxn2: Transaction = {
       id: "2",
       description: "NORMAL PURCHASE",
