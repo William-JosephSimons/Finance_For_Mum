@@ -10,9 +10,9 @@ This plan follows the "Tiger Beetle" philosophy, focusing on mechanical sympathy
 
 ## Phase 2: Data Plane & Engine Optimization (Batching & Mechanical Sympathy)
 - [x] Task: Refactor `lib/engine/categorization.ts` and `rules.ts` to use batched processing instead of per-transaction calls. ca1d4fb
-- [~] Task: Optimize transaction data structures in `lib/store/index.ts` to minimize serialization overhead and improve cache locality.
-- [ ] Task: Extract hot loops from engine logic into stand-alone functions with primitive arguments to assist compiler optimization.
-- [ ] Task: Implement batching for transaction state updates to prevent redundant UI re-renders.
+- [x] Task: Optimize transaction data structures in `lib/store/index.ts` to minimize serialization overhead and improve cache locality. 36cb55f
+- [x] Task: Extract hot loops from engine logic into stand-alone functions with primitive arguments to assist compiler optimization. 04ffeea
+- [~] Task: Implement batching for transaction state updates to prevent redundant UI re-renders.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Engine Optimization' (Protocol in workflow.md)
 
 ## Phase 3: UI Rendering & Responsiveness (60fps Target)
