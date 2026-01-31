@@ -22,9 +22,20 @@
 
 ## 3. Concrete Hot Paths & Inefficiencies
 
-1.  **Redundant Sorting:** `addTransactions` sorts the entire `transactions` list on every call. If importing multiple small batches, this becomes a major bottleneck.
-2.  **Linear Rule Matching:** `applyRules` uses `.find()` on a sorted array of rules for every transaction. For large rule sets, a Trie or Regex-based matcher would be faster.
-3.  **Immer Overhead:** While `immer` is great for DX, using it to push large arrays into state can be slower than native spread for very large datasets.
-4.  **LLM Batching Delay:** The current LLM implementation has a fixed `DELAY_PER_CHUNK_MS = 2000` to avoid rate limits. We should verify if this can be safely reduced or if we can parallelize chunks within rate limits.
-5.  **UI Re-renders:** Every store update triggers a full re-render of listeners. We should use batched updates if multiple transactions are updated sequentially.
+### Logic & Engine
+1.  **Redundant Sorting:** `addTransactions` in `lib/store/index.ts` sorts the entire list on every insertion.
+2.  **O(N) Deduplication:** `addTransactions` maps the entire list to a Set of IDs for every insertion.
+3.  **Linear Rule Matching:** `applyRules` uses `transactions.map` + `rules.find`. Complexity is `O(N * M)`.
+4.  **Synchronous Engine Workflow:** `runCategorizationWorkflow` processes everything on the JS thread, potentially blocking UI frames.
+
+### UI & Rendering
+1.  **Nested List Rendering:** `TransactionsScreen` renders transactions using `.map()` inside a `FlatList` month group. This bypasses virtualization for transactions within a month.
+2.  **Heavy Dashboard Calcs:** `DashboardScreen` recalculates Safe Balance, Recurring Patterns, Round-ups, and Surcharges on every transaction change.
+3.  **Global Store Listeners:** Components like `TransactionsScreen` listen to the entire `transactions` array, triggering re-renders even when unrelated transactions change.
+
+### Allocation Zones
+1.  **Object Spreading:** Frequent use of `{ ...txn, category: '...' }` in `applyRules` and `runCategorizationWorkflow` creates many short-lived objects.
+2.  **Date Object Creation:** `sortTransactions` and `groupedTransactions` create new `Date` objects repeatedly during iteration.
+3.  **String Normalization:** `applyRules` calls `.toUpperCase()` on every transaction description and every rule keyword during the search.
+
 
