@@ -27,24 +27,14 @@ interface ParseResult {
 export function detectBank(headers: string[]): BankType {
   const headerStr = headers.join(",").toLowerCase();
 
-  // CommBank: Date, Amount, Description, Balance
-  if (
-    headerStr.includes("narrative") ||
-    (headerStr.includes("date") &&
-      headerStr.includes("amount") &&
-      headerStr.includes("description"))
-  ) {
-    return "commbank";
+  // Westpac: Bank Account, Date, Narrative, Debit Amount, Credit Amount
+  if (headerStr.includes("bank account") || headerStr.includes("narrative")) {
+    return "westpac";
   }
 
   // NAB: Date, Transaction Type, Debit, Credit, Balance
   if (headerStr.includes("debit") && headerStr.includes("credit")) {
     return "nab";
-  }
-
-  // Westpac: Bank Account, Date, Narrative, Debit Amount, Credit Amount
-  if (headerStr.includes("bank account") || headerStr.includes("narrative")) {
-    return "westpac";
   }
 
   // ANZ: Date, Transaction Details, Debit, Credit, Balance
@@ -59,6 +49,15 @@ export function detectBank(headers: string[]): BankType {
   // "Account History for Account:","..."
   if (headerStr.includes("account history for account")) {
     return "suncorp";
+  }
+
+  // CommBank: Date, Amount, Description, Balance
+  if (
+    headerStr.includes("date") &&
+    headerStr.includes("amount") &&
+    headerStr.includes("description")
+  ) {
+    return "commbank";
   }
 
   // Generic fallback - look for common columns
