@@ -244,7 +244,7 @@ export default function TransactionsScreen() {
 
             <View className="flex-row justify-between items-start mb-1">
               <View className="flex-1">
-                <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase mb-2">
+                <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase tracking-widest mb-2">
                   Categorize Transaction
                 </Text>
                 <Text className="text-accent dark:text-accent-dark text-xl font-bold mb-1">
@@ -258,7 +258,7 @@ export default function TransactionsScreen() {
               {!isDeleting && (
                 <Pressable
                   onPress={handleDelete}
-                  className="w-12 h-12 bg-negative/10 rounded-full items-center justify-center"
+                  className="w-12 h-12 bg-negative/10 rounded-full items-center justify-center active:opacity-70"
                 >
                   <Text className="text-xl">🗑️</Text>
                 </Pressable>
@@ -276,7 +276,7 @@ export default function TransactionsScreen() {
                 <View className="flex-row gap-3">
                   <Pressable
                     onPress={() => setIsDeleting(false)}
-                    className="flex-1 py-4 rounded-2xl items-center bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark"
+                    className="flex-1 py-4 rounded-2xl items-center bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark active:bg-surface-subtle"
                   >
                     <Text className="text-accent dark:text-accent-dark font-bold">
                       Keep it
@@ -284,7 +284,7 @@ export default function TransactionsScreen() {
                   </Pressable>
                   <Pressable
                     onPress={confirmDelete}
-                    className="flex-1 py-4 rounded-2xl items-center bg-negative"
+                    className="flex-1 py-4 rounded-2xl items-center bg-negative active:opacity-80"
                   >
                     <Text className="text-white font-bold">Yes, Delete</Text>
                   </Pressable>
@@ -349,7 +349,7 @@ export default function TransactionsScreen() {
                   />
                 </View>
 
-                <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase mb-4">
+                <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase tracking-widest mb-4">
                   Select Category
                 </Text>
                 <ScrollView showsVerticalScrollIndicator={false}>
@@ -386,7 +386,7 @@ export default function TransactionsScreen() {
                 setAlwaysApply(false);
                 setIsDeleting(false);
               }}
-              className="mt-8 py-5 rounded-2xl items-center bg-accent dark:bg-accent-dark"
+              className="mt-8 py-5 rounded-2xl items-center bg-accent dark:bg-accent-dark active:opacity-80"
             >
               <Text className="text-white dark:text-black font-bold">
                 Close

@@ -200,7 +200,7 @@ export default function BackupScreen() {
 
         {/* Reset Section */}
         <View className="mt-8 pt-8 border-t border-border dark:border-border-dark">
-          <Text className="text-negative font-bold text-sm uppercase mb-4 px-2">
+          <Text className="text-negative font-bold text-sm uppercase tracking-widest mb-4 px-2">
             Danger Zone
           </Text>
           {!isResetting ?

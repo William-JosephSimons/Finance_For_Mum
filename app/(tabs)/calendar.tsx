@@ -109,7 +109,7 @@ export default function CalendarScreen() {
       {/* Current Balance */}
       <View className="px-6 py-4">
         <View className="bg-white dark:bg-surface-subtle-dark rounded-3xl p-6 border border-border dark:border-border-dark">
-          <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase mb-2">
+          <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase tracking-widest mb-2">
             Starting Balance
           </Text>
           <Text className="text-size-balance text-accent dark:text-accent-dark">
@@ -123,7 +123,7 @@ export default function CalendarScreen() {
         {billsByWeek.map(([weekLabel, bills]) => (
           <View key={weekLabel} className="mb-6">
             {/* Bills Section */}
-            <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase mb-4">
+            <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase tracking-widest mb-4">
               {weekLabel}
             </Text>
 

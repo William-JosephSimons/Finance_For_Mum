@@ -59,7 +59,7 @@ export default function DashboardScreen() {
   }, [transactions, isReadyForHeavyCalcs]);
 
   const { safeBalance, upcomingBills } = useMemo(() => {
-    if (!isReadyForHeavyCalcs) return { safeBalance: bankBalance, upcomingBills: [] };
+    if (!isReadyForHeavyCalcs) return { safeBalance: bankBalance - savingsBuckets, upcomingBills: [] };
     return calculateSafeBalance(
       bankBalance,
       savingsBuckets,
@@ -99,7 +99,7 @@ export default function DashboardScreen() {
       {/* Header */}
       <View className="px-6 pt-16 pb-8 flex-row justify-between items-center">
         <View>
-          <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase">
+          <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase tracking-widest">
             True North
           </Text>
           <Text className="text-accent dark:text-accent-dark text-2xl font-display mt-1">
@@ -119,7 +119,7 @@ export default function DashboardScreen() {
 
       {/* Safe Balance Hero Section - Removed shadow-2xl for Android stability */}
       <View className="px-6 py-10 mb-6 mx-6 bg-accent dark:bg-accent-dark rounded-[40px] items-center">
-        <Text className="text-accent-dark dark:text-accent text-sm font-semibold mb-3 opacity-80 uppercase">
+        <Text className="text-accent-dark dark:text-accent text-sm font-semibold mb-3 tracking-wide opacity-80 uppercase">
           Safe to Spend
         </Text>
         <Text
@@ -165,7 +165,7 @@ export default function DashboardScreen() {
       <View className="px-6 gap-6">
         {/* Current Bank Balance Card - Removed shadow-sm for Android stability */}
         <View className="bg-white dark:bg-surface-subtle-dark rounded-3xl p-6 border border-border dark:border-border-dark">
-          <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase mb-2">
+          <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase tracking-widest mb-2">
             Bank Balance
           </Text>
           <Text className="text-size-balance text-accent dark:text-accent-dark">
@@ -179,7 +179,7 @@ export default function DashboardScreen() {
           <View className="bg-positive-muted/50 dark:bg-positive/10 rounded-3xl p-6 border border-positive/20">
             <View className="flex-row items-center gap-3 mb-2">
               <View className="bg-positive w-2 h-2 rounded-full" />
-              <Text className="text-positive dark:text-positive text-xs font-bold uppercase">
+              <Text className="text-positive dark:text-positive text-xs font-bold uppercase tracking-widest">
                 Round-Up Potential
               </Text>
             </View>
@@ -196,7 +196,7 @@ export default function DashboardScreen() {
             <View className="bg-negative-muted/50 dark:bg-negative/10 rounded-3xl p-6 border border-negative/20">
               <View className="flex-row items-center gap-3 mb-2">
                 <View className="bg-negative w-2 h-2 rounded-full" />
-                <Text className="text-negative dark:text-negative text-xs font-bold uppercase">
+                <Text className="text-negative dark:text-negative text-xs font-bold uppercase tracking-widest">
                   Merchant Surcharges
                 </Text>
               </View>
@@ -292,7 +292,7 @@ export default function DashboardScreen() {
             </Text>
 
             <View className="bg-surface-subtle dark:bg-surface-subtle-dark border border-border dark:border-border-dark rounded-2xl px-5 py-4 mb-6">
-              <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase mb-1">
+              <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase tracking-widest mb-1">
                 Amount ($)
               </Text>
               <TextInput

@@ -147,7 +147,7 @@ export default function ImportScreen() {
 
       {/* Supported Banks */}
       <View className="px-6 py-6">
-        <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase mb-4">
+        <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase tracking-widest mb-4">
           Supported Banks
         </Text>
         <View className="flex-row flex-wrap gap-3">
