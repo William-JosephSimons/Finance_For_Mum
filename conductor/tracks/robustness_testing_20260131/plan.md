@@ -16,7 +16,7 @@ Focus: Achieving 100% coverage and robustness for the lowest-level helper functi
     - [x] Write tests for CSVs with missing expected columns (e.g., no 'Date' column).
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Utilities' (Protocol in workflow.md)
 
-## Phase 2: State Management & Logic Engines (The Core)
+## Phase 2: State Management & Logic Engines (The Core) [checkpoint: 706a8e2]
 Focus: Testing the brain of the application—categorization and state transitions.
 
 - [x] Task: Logic Engine Deep-Dive (`lib/engine/`)
@@ -28,7 +28,7 @@ Focus: Testing the brain of the application—categorization and state transitio
     - [x] Write integration tests for the Zustand store handling bulk imports.
     - [x] Verify that importing a CSV correctly triggers the categorization engine and updates the store state.
     - [x] Test persistence logic (if applicable) and state reset conditions.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: State Management & Logic Engines' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: State Management & Logic Engines' (Protocol in workflow.md)
 
 ## Phase 3: UI Components & User Flows (The Surface)
 Focus: Ensuring the visual layer is resilient and correctly reflects the underlying state.
