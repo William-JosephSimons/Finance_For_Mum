@@ -88,10 +88,12 @@ describe("LLM Transaction Analysis", () => {
 
   it("handles API failure gracefully", async () => {
     mockCreate.mockRejectedValue(new Error("API Error"));
+    const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
     const result = await analyzeTransaction(mockTxn);
 
     expect(result.category).toBe("Uncategorized");
     expect(result.reasoning).toContain("Error");
+    consoleSpy.mockRestore();
   });
 });

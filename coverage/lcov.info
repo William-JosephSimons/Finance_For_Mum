@@ -341,7 +341,7 @@ FN:283,(anonymous_11)
 FN:310,(anonymous_12)
 FNF:13
 FNH:10
-FNDA:8,DashboardScreen
+FNDA:7,DashboardScreen
 FNDA:2,(anonymous_1)
 FNDA:2,(anonymous_2)
 FNDA:2,(anonymous_3)
@@ -354,7 +354,7 @@ FNDA:4,(anonymous_9)
 FNDA:0,(anonymous_10)
 FNDA:0,(anonymous_11)
 FNDA:0,(anonymous_12)
-DA:27,8
+DA:27,7
 DA:28,7
 DA:29,7
 DA:30,7

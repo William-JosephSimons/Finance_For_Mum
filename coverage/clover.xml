@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1769851172626" clover="3.2.0">
-  <project timestamp="1769851172627" name="All files">
+<coverage generated="1769854658140" clover="3.2.0">
+  <project timestamp="1769854658140" name="All files">
     <metrics statements="723" coveredstatements="343" conditionals="520" coveredconditionals="172" methods="210" coveredmethods="115" elements="1453" coveredelements="630" complexity="0" loc="723" ncloc="723" packages="6" files="19" classes="19"/>
     <package name="app">
       <metrics statements="107" coveredstatements="28" conditionals="36" coveredconditionals="15" methods="18" coveredmethods="5"/>
@@ -175,7 +175,7 @@
       </file>
       <file name="index.tsx" path="C:\Users\Billy\OneDrive\Desktop\CodeProjects\Mum_Finance\app\(tabs)\index.tsx">
         <metrics statements="36" coveredstatements="32" conditionals="26" coveredconditionals="17" methods="13" coveredmethods="10"/>
-        <line num="27" count="8" type="stmt"/>
+        <line num="27" count="7" type="stmt"/>
         <line num="28" count="7" type="stmt"/>
         <line num="29" count="7" type="stmt"/>
         <line num="30" count="7" type="stmt"/>

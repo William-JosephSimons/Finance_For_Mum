@@ -9,9 +9,11 @@ describe("DashboardScreen", () => {
     useAppStore.getState().setHasHydrated(true);
   });
 
-  it("should render correctly", () => {
+  it("should render correctly", async () => {
     const { getByText } = render(<DashboardScreen />);
-    expect(getByText("Mum's Finance")).toBeTruthy();
+    await waitFor(() => {
+      expect(getByText("Mum's Finance")).toBeTruthy();
+    });
     expect(getByText("Safe to Spend")).toBeTruthy();
   });
 
