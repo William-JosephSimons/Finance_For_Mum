@@ -7,9 +7,16 @@ const API_KEY =
   process.env.EXPO_PUBLIC_CEREBRAS_API_KEY ||
   "csk-x3ct4w5nve9vhkvce44cwc6vhewer8ekm8e432n9f5y8ptkr";
 
-const client = new Cerebras({
-  apiKey: API_KEY,
-});
+let clientInstance: Cerebras | null = null;
+
+function getClient() {
+  if (!clientInstance) {
+    clientInstance = new Cerebras({
+      apiKey: API_KEY,
+    });
+  }
+  return clientInstance;
+}
 
 export interface AnalysisResult {
   category: Category;
@@ -27,6 +34,7 @@ async function analyzeChunk(
   chunk: Transaction[],
 ): Promise<Map<string, AnalysisResult>> {
   const results = new Map<string, AnalysisResult>();
+  const client = getClient();
 
   // 1. Construct Minimized Prompt
   const txnList = chunk

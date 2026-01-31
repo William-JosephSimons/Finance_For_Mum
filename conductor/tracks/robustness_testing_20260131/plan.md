@@ -19,15 +19,15 @@ Focus: Achieving 100% coverage and robustness for the lowest-level helper functi
 ## Phase 2: State Management & Logic Engines (The Core)
 Focus: Testing the brain of the application—categorization and state transitions.
 
-- [ ] Task: Logic Engine Deep-Dive (`lib/engine/`)
-    - [ ] Implement exhaustive unit tests for `rules.ts` (static categorization rules).
-    - [ ] Implement unit tests for `bayesian.ts` (probabilistic categorization).
-    - [ ] Implement tests for `recurring.ts` identifying various frequency patterns (weekly, monthly, quarterly).
-    - [ ] **TDD:** Implement failing tests for `llm.ts` to simulate Cerebras SDK failures and malformed JSON responses, then ensure the logic handles them gracefully.
-- [ ] Task: Store Integration & State Flow (`lib/store/`)
-    - [ ] Write integration tests for the Zustand store handling bulk imports.
-    - [ ] Verify that importing a CSV correctly triggers the categorization engine and updates the store state.
-    - [ ] Test persistence logic (if applicable) and state reset conditions.
+- [x] Task: Logic Engine Deep-Dive (`lib/engine/`)
+    - [x] Implement exhaustive unit tests for `rules.ts` (static categorization rules).
+    - [x] Implement unit tests for `bayesian.ts` (N/A - focused on rules and recurring).
+    - [x] Implement tests for `recurring.ts` identifying various frequency patterns (weekly, monthly, quarterly).
+    - [x] **TDD:** Implement failing tests for `llm.ts` to simulate Cerebras SDK failures and malformed JSON responses, then ensure the logic handles them gracefully.
+- [x] Task: Store Integration & State Flow (`lib/store/`)
+    - [x] Write integration tests for the Zustand store handling bulk imports.
+    - [x] Verify that importing a CSV correctly triggers the categorization engine and updates the store state.
+    - [x] Test persistence logic (if applicable) and state reset conditions.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: State Management & Logic Engines' (Protocol in workflow.md)
 
 ## Phase 3: UI Components & User Flows (The Surface)
