@@ -2,13 +2,13 @@
 
 This plan addresses Android-specific UI fixes, removal of the PayID feature, and ensuring data consistency between transactions and the Bills page.
 
-## Phase 1: PayID Feature Removal
+## Phase 1: PayID Feature Removal [checkpoint: b28f165]
 Goal: Completely remove all code related to the PayID contact management feature.
 
 - [x] Task: Remove `app/(tabs)/payid.tsx` and its references in `app/(tabs)/_layout.tsx`
 - [x] Task: Remove `PayIDContact` interface and `contacts` state/actions from `lib/store/index.ts`
 - [x] Task: Remove PayID-related factories from `__tests__/factories.ts`
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: PayID Removal' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: PayID Removal' (Protocol in workflow.md)
 
 ## Phase 2: Android UI & Performance Fixes
 Goal: Resolve console errors and optimize rendering for a smoother experience on Android.
