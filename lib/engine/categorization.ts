@@ -37,7 +37,7 @@ export async function runCategorizationWorkflow(
   // 3. Analyze with LLM
   const results = await analyzeBatch(
     uncategorized,
-    20, // batch size
+    50, // batch size
     options?.onProgress,
   );
 
@@ -53,7 +53,7 @@ export async function runCategorizationWorkflow(
       updatedTxns[i] = {
         ...txn,
         category: analysis.category,
-        isRecurring: analysis.isSubscription || txn.isRecurring,
+        isRecurring: analysis.isSubscription || analysis.isRecurring || txn.isRecurring,
         merchantName: analysis.cleanMerchantName || txn.merchantName,
       };
     } else {

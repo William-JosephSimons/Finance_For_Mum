@@ -145,7 +145,7 @@ describe("Utility Functions", () => {
       ];
       const subs = detectSubscriptions(txns);
       expect(subs).toHaveLength(1);
-      expect(subs[0].name).toBe("Amazon");
+      expect(subs[0].name).toBe("AMAZON");
     });
   });
 

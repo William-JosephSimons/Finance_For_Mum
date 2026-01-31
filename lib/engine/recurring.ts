@@ -27,8 +27,10 @@ export function detectRecurring(
     if (txn.amount >= 0) return;
 
     // Group by merchantName (if available from LLM) or fallback to normalized description
+    // Group by merchantName (if available from LLM) or fallback to normalized description
     const key =
-      txn.merchantName || txn.description.slice(0, 15).toUpperCase().trim();
+      (txn.merchantName ? txn.merchantName.toUpperCase() : null) ||
+      txn.description.slice(0, 15).toUpperCase().trim();
     const existing = groups.get(key) || [];
     existing.push(txn);
     groups.set(key, existing);
@@ -97,8 +99,10 @@ export function markRecurringTransactions(
   return transactions.map((txn) => {
     if (txn.amount >= 0) return txn;
 
+    // Group by merchantName (if available from LLM) or fallback to normalized description
     const key =
-      txn.merchantName || txn.description.slice(0, 15).toUpperCase().trim();
+      (txn.merchantName ? txn.merchantName.toUpperCase() : null) ||
+      txn.description.slice(0, 15).toUpperCase().trim();
 
     if (keywords.has(key)) {
       return { ...txn, isRecurring: true };

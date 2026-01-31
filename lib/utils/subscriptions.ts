@@ -25,7 +25,8 @@ export function detectSubscriptions(
 
     // Use clean merchant name if available, otherwise fallback
     const key =
-      txn.merchantName || txn.description.toUpperCase().slice(0, 15).trim();
+      (txn.merchantName ? txn.merchantName.toUpperCase() : null) ||
+      txn.description.toUpperCase().slice(0, 15).trim();
 
     const existing = subGroups.get(key) || [];
     existing.push(txn);

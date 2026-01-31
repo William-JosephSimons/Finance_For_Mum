@@ -41,7 +41,7 @@ describe("Categorization Workflow", () => {
     expect(rules.applyRules).toHaveBeenCalledWith(mockTxns, mockRules);
     expect(llm.analyzeBatch).toHaveBeenCalledWith(
       expect.arrayContaining([expect.objectContaining({ id: "2" })]),
-      20,
+      50,
       undefined
     );
 

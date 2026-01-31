@@ -47,7 +47,9 @@ export function calculateSafeBalance(
     const t = transactions[i];
     if (t.amount >= 0) continue;
     if (t.date.substring(0, 7) === monthStr) {
-      const tKey = t.merchantName || t.description.slice(0, 15).toUpperCase().trim();
+      const tKey =
+        (t.merchantName ? t.merchantName.toUpperCase() : null) ||
+        t.description.slice(0, 15).toUpperCase().trim();
       thisMonthExpensesKeys.add(tKey);
     }
   }
