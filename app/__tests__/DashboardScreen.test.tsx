@@ -38,4 +38,9 @@ describe("DashboardScreen", () => {
     // Check if UI reflects the new balance - using regex and getAllByText because it appears in multiple places
     expect(getAllByText(/\$1,234\.56/).length).toBeGreaterThanOrEqual(1);
   });
+
+  it("should show empty state message when no transactions", async () => {
+    const { findByText } = render(<DashboardScreen />);
+    expect(await findByText("Ready to start?")).toBeTruthy();
+  });
 });

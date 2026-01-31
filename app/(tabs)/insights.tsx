@@ -69,7 +69,10 @@ export default function InsightsScreen() {
 
       <View className="px-6 py-4 gap-6">
         {/* Round-Up Simulator */}
-        <View className="bg-positive-muted/50 dark:bg-positive/10 rounded-3xl p-6 border border-positive/20">
+        <View 
+          testID="round-up-card"
+          className="bg-positive-muted/50 dark:bg-positive/10 rounded-3xl p-6 border border-positive/20"
+        >
           <Text className="text-positive text-xs font-bold uppercase tracking-widest mb-1">
             💰 Round-Up Simulator
           </Text>
@@ -82,7 +85,10 @@ export default function InsightsScreen() {
         </View>
 
         {/* Surcharge Detector */}
-        <View className="bg-negative-muted/50 dark:bg-negative/10 rounded-3xl p-6 border border-negative/20">
+        <View 
+          testID="surcharge-card"
+          className="bg-negative-muted/50 dark:bg-negative/10 rounded-3xl p-6 border border-negative/20"
+        >
           <Text className="text-negative text-xs font-bold uppercase tracking-widest mb-1">
             💳 Card Fees & Surcharges
           </Text>

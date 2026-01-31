@@ -33,14 +33,14 @@ Focus: Testing the brain of the application—categorization and state transitio
 ## Phase 3: UI Components & User Flows (The Surface)
 Focus: Ensuring the visual layer is resilient and correctly reflects the underlying state.
 
-- [ ] Task: Screen & Component Coverage (`app/`)
-    - [ ] Write tests for `DashboardScreen.test.tsx` (index.tsx) covering empty states vs. populated states.
-    - [ ] Write tests for `ImportScreen.test.tsx` verifying file picker interaction and success/error feedback.
-    - [ ] Write tests for `TransactionsScreen.test.tsx` ensuring filters and sorting work correctly.
-    - [ ] Write tests for `insights.tsx` and `calendar.tsx` visual summaries.
-- [ ] Task: End-to-End User Flow Simulations
-    - [ ] Implement a test representing the "Full Cycle": Import CSV -> See categorized transactions -> Check dashboard totals.
-    - [ ] Implement a test for "Recurring Bill Management": Identification -> User Override -> State Update.
+- [x] Task: Screen & Component Coverage (`app/`)
+    - [x] Write tests for `DashboardScreen.test.tsx` (index.tsx) covering empty states vs. populated states.
+    - [x] Write tests for `ImportScreen.test.tsx` verifying file picker interaction and success/error feedback.
+    - [x] Write tests for `TransactionsScreen.test.tsx` ensuring filters and sorting work correctly.
+    - [x] Write tests for `insights.tsx` and `calendar.tsx` visual summaries.
+- [x] Task: End-to-End User Flow Simulations
+    - [x] Implement a test representing the "Full Cycle": Import CSV -> See categorized transactions -> Check dashboard totals.
+    - [x] Implement a test for "Recurring Bill Management": Identification -> User Override -> State Update.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: UI Components & User Flows' (Protocol in workflow.md)
 
 ## Phase 4: Final Validation & Cleanup
