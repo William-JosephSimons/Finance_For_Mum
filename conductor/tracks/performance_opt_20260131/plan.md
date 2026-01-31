@@ -8,12 +8,12 @@ This plan follows the "Tiger Beetle" philosophy, focusing on mechanical sympathy
 - [x] Task: Identify "hot paths" and high-allocation zones in the Zustand store and transaction filtering logic. a5f62f5
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Performance Audit' (Protocol in workflow.md) a98ec02
 
-## Phase 2: Data Plane & Engine Optimization (Batching & Mechanical Sympathy)
+## Phase 2: Data Plane & Engine Optimization (Batching & Mechanical Sympathy) [checkpoint: d4d2cf1]
 - [x] Task: Refactor `lib/engine/categorization.ts` and `rules.ts` to use batched processing instead of per-transaction calls. ca1d4fb
 - [x] Task: Optimize transaction data structures in `lib/store/index.ts` to minimize serialization overhead and improve cache locality. 36cb55f
 - [x] Task: Extract hot loops from engine logic into stand-alone functions with primitive arguments to assist compiler optimization. 04ffeea
-- [~] Task: Implement batching for transaction state updates to prevent redundant UI re-renders.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Engine Optimization' (Protocol in workflow.md)
+- [x] Task: Implement batching for transaction state updates to prevent redundant UI re-renders. 04ffeea
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Engine Optimization' (Protocol in workflow.md) d4d2cf1
 
 ## Phase 3: UI Rendering & Responsiveness (60fps Target)
 - [ ] Task: Audit and optimize transaction list rendering using virtualization and targeted memoization.
