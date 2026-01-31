@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">33.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>15/15</span>
+                <span class='fraction'>5/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.66% </span>
+                <span class="strong">16.66% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>11/12</span>
+                <span class='fraction'>2/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">66.66% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>2/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">41.66% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>12/12</span>
+                <span class='fraction'>5/12</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -114,8 +114,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">74x</span>
-<span class="cline-any cline-yes">74x</span>
+<span class="cline-any cline-yes">49x</span>
+<span class="cline-any cline-yes">49x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -123,7 +123,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">74x</span>
+<span class="cline-any cline-yes">49x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -131,8 +131,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -140,16 +140,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { format } from "date-fns";
 &nbsp;
@@ -167,7 +167,7 @@ export function formatCurrency(amount: number): string {
   }).format(absAmount);
 &nbsp;
   // Handle negative amounts
-  return amount &lt; 0 ? `-${formatted}` : formatted;
+  return amount &lt; 0 ? <span class="branch-0 cbranch-no" title="branch not covered" >`-${formatted}` </span>: formatted;
 }
 &nbsp;
 /**
@@ -175,7 +175,7 @@ export function formatCurrency(amount: number): string {
  * @example formatDate("2024-01-15") =&gt; "15/01/2024"
  */
 export function formatDate(date: Date | string): string {
-  const d = typeof date === "string" ? new Date(date) : date;
+  const d = typeof date === "string" ? <span class="branch-0 cbranch-no" title="branch not covered" >new Date(date) </span>: date;
   return format(d, "dd/MM/yyyy");
 }
 &nbsp;
@@ -183,17 +183,17 @@ export function formatDate(date: Date | string): string {
  * Formats a date as a relative string.
  * @example formatRelativeDate(new Date()) =&gt; "Today"
  */
-export function formatRelativeDate(date: Date | string): string {
-  const d = typeof date === "string" ? new Date(date) : <span class="branch-1 cbranch-no" title="branch not covered" >date;</span>
-  const now = new Date();
-  const diffDays = Math.floor(
+export function <span class="fstat-no" title="function not covered" >formatRelativeDate(</span>date: Date | string): string {
+  const d = <span class="cstat-no" title="statement not covered" >typeof date === "string" ? new Date(date) : date;</span>
+  const now = <span class="cstat-no" title="statement not covered" >new Date();</span>
+  const diffDays = <span class="cstat-no" title="statement not covered" >Math.floor(</span>
     (now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24),
   );
 &nbsp;
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "Yesterday";
-  if (diffDays &lt; 7) return `${diffDays} days ago`;
-  return formatDate(d);
+<span class="cstat-no" title="statement not covered" >  if (diffDays === 0) <span class="cstat-no" title="statement not covered" >return "Today";</span></span>
+<span class="cstat-no" title="statement not covered" >  if (diffDays === 1) <span class="cstat-no" title="statement not covered" >return "Yesterday";</span></span>
+<span class="cstat-no" title="statement not covered" >  if (diffDays &lt; 7) <span class="cstat-no" title="statement not covered" >return `${diffDays} days ago`;</span></span>
+<span class="cstat-no" title="statement not covered" >  return formatDate(d);</span>
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -202,7 +202,7 @@ export function formatRelativeDate(date: Date | string): string {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-31T12:21:10.885Z
+                at 2026-01-31T12:42:03.786Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
