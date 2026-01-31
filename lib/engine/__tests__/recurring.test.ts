@@ -75,7 +75,45 @@ describe("recurring engine", () => {
       expect(rent?.dayOfMonth).toBe(1);
     });
 
-    it("should ignore transactions with inconsistent amounts", () => {
+    it("should detect recurring even with amount change if marked as isRecurring", () => {
+      const txns = [
+        createTransaction({
+          id: "n1",
+          date: "2024-01-15",
+          amount: -15.99,
+          description: "NETFLIX",
+          isRecurring: true,
+        }),
+        createTransaction({
+          id: "n2",
+          date: "2024-02-15",
+          amount: -18.99,
+          description: "NETFLIX",
+          isRecurring: true,
+        }),
+      ];
+
+      const patterns = detectRecurring(txns);
+      expect(patterns.length).toBe(1);
+      expect(patterns[0].keyword).toBe("NETFLIX");
+    });
+
+    it("should detect recurring with only 1 item if marked as isRecurring", () => {
+      const txns = [
+        createTransaction({
+          id: "n1",
+          date: "2024-01-15",
+          amount: -15.99,
+          description: "NETFLIX",
+          isRecurring: true,
+        }),
+      ];
+
+      const patterns = detectRecurring(txns);
+      expect(patterns.length).toBe(1);
+    });
+
+    it("should ignore transactions with inconsistent amounts if NOT marked as isRecurring", () => {
       const patterns = detectRecurring(mockTransactions);
       const woolworths = patterns.find((p) => p.keyword === "WOOLWORTHS 123");
       expect(woolworths).toBeUndefined();

@@ -43,18 +43,18 @@ export function detectRecurring(
     // If not explicit, we need at least 2 occurrences to establish a pattern
     if (!isExplicitlyRecurring && txns.length < 2) return;
 
-    // Check if amounts are within 5%
     const amounts = txns.map((t) => Math.abs(t.amount));
     const avgAmount = amounts.reduce((a, b) => a + b, 0) / amounts.length;
 
+    // If explicit, we are more lenient with amount variance (maybe price changed)
+    // Actually, if it's explicitly marked as isRecurring (e.g. by LLM),
+    // we want to catch it even if the amount changed significantly.
+    const amountTolerance = isExplicitlyRecurring ? 0.2 : 0.05; // 20% vs 5%
+
     const withinTolerance = amounts.every(
-      (a) => Math.abs(a - avgAmount) / avgAmount < 0.05,
+      (a) => Math.abs(a - avgAmount) / avgAmount < amountTolerance,
     );
 
-    // If explicit, we are more lenient with amount variance (maybe price changed)
-    // But for now, let's keep it strict or just warn.
-    // Actually, if it's explicit ID (like Netflix), amount might vary but we still want it.
-    // Let's relax tolerance if explicit.
     if (!withinTolerance && !isExplicitlyRecurring) return;
 
     // Check if same day of month (±3 days)
@@ -68,11 +68,12 @@ export function detectRecurring(
     );
 
     // If explicit (LLM detected Subscription/Bill), we accept even if pattern is weak (e.g. only 1 item)
+    // or if the day of month varies (e.g. paid on Friday every 4 weeks)
     if (!sameDayPattern && !isExplicitlyRecurring) return;
 
     patterns.push({
       keyword,
-      averageAmount: Math.round(avgAmount * 100) / 100,
+      averageAmount: Math.round(txns[0].amount * -100) / 100, // Use latest occurrence amount (txns are sorted by date desc)
       dayOfMonth: avgDay,
       occurrences: txns.length,
     });

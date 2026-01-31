@@ -108,7 +108,7 @@ export default function DashboardScreen() {
         </View>
         <Link href="/backup" asChild>
           <Pressable
-            className="w-12 h-12 bg-surface-subtle dark:bg-surface-subtle-dark rounded-full items-center justify-center"
+            className="w-12 h-12 bg-surface-subtle dark:bg-surface-subtle-dark rounded-full items-center justify-center active:opacity-80"
             accessibilityRole="button"
             accessibilityLabel="Backup and Restore"
           >
@@ -140,7 +140,7 @@ export default function DashboardScreen() {
       <View className="px-6 flex-row gap-4 mb-8">
         <Link href="/import" asChild>
           <Pressable
-            className="flex-1 bg-surface-subtle dark:bg-surface-subtle-dark p-6 rounded-3xl items-center border border-border dark:border-border-dark"
+            className="flex-1 bg-surface-subtle dark:bg-surface-subtle-dark p-6 rounded-3xl items-center border border-border dark:border-border-dark active:opacity-80"
             accessibilityRole="button"
           >
             <Text className="text-2xl mb-2">📥</Text>
@@ -151,7 +151,7 @@ export default function DashboardScreen() {
         </Link>
         <Pressable
           onPress={handleSetBalance}
-          className="flex-1 bg-surface-subtle dark:bg-surface-subtle-dark p-6 rounded-3xl items-center border border-border dark:border-border-dark"
+          className="flex-1 bg-surface-subtle dark:bg-surface-subtle-dark p-6 rounded-3xl items-center border border-border dark:border-border-dark active:opacity-80"
           accessibilityRole="button"
         >
           <Text className="text-2xl mb-2">💰</Text>
@@ -217,9 +217,9 @@ export default function DashboardScreen() {
               <Text className="text-accent dark:text-accent-dark text-lg font-bold">
                 Upcoming Bills
               </Text>
-              <View className="bg-surface-subtle dark:bg-accent-dark px-3 py-1 rounded-full">
-                <Text className="text-accent dark:text-accent-dark text-xs font-bold">
-                  Next 14 Days
+              <View className="bg-accent dark:bg-accent-dark px-3 py-1 rounded-full">
+                <Text className="text-white dark:text-black text-xs font-bold">
+                  Next 30 Days
                 </Text>
               </View>
             </View>
@@ -235,7 +235,7 @@ export default function DashboardScreen() {
                       {bill.description}
                     </Text>
                     <Text className="text-muted dark:text-muted-dark text-xs">
-                      Estimated
+                      Scheduled
                     </Text>
                   </View>
                   <Text className="text-accent dark:text-accent-dark font-bold text-lg">

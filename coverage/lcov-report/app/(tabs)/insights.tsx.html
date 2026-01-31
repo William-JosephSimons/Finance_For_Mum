@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/26</span>
+                <span class='fraction'>0/34</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/16</span>
+                <span class='fraction'>0/24</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/23</span>
+                <span class='fraction'>0/27</span>
             </div>
         
             
@@ -252,7 +252,8 @@
 <a name='L187'></a><a href='#L187'>187</a>
 <a name='L188'></a><a href='#L188'>188</a>
 <a name='L189'></a><a href='#L189'>189</a>
-<a name='L190'></a><a href='#L190'>190</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L190'></a><a href='#L190'>190</a>
+<a name='L191'></a><a href='#L191'>191</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -267,22 +268,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -451,28 +453,29 @@ import { detectSubscriptions } from "@/lib/utils/subscriptions";
 import { subMonths } from "date-fns";
 &nbsp;
 export default function <span class="fstat-no" title="function not covered" >InsightsScreen(</span>) {
-  const { transactions } = <span class="cstat-no" title="statement not covered" >useAppStore();</span>
+  const { transactions, _hasHydrated } = <span class="cstat-no" title="statement not covered" >useAppStore();</span>
 &nbsp;
   // Round-Up Simulator (current month)
-  const roundUpData = <span class="cstat-no" title="statement not covered" >useMemo(</span>
-<span class="fstat-no" title="function not covered" >    ()</span> =&gt; <span class="cstat-no" title="statement not covered" >calculateRoundUpSavings(transactions),</span>
-    [transactions],
-  );
+  const roundUpData = <span class="cstat-no" title="statement not covered" >useMemo(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    if (!_hasHydrated) <span class="cstat-no" title="statement not covered" >return { total: 0, transactionCount: 0 };</span></span>
+<span class="cstat-no" title="statement not covered" >    return calculateRoundUpSavings(transactions);</span>
+  }, [transactions, _hasHydrated]);
 &nbsp;
   // Surcharge Detector (current month)
-  const surchargeData = <span class="cstat-no" title="statement not covered" >useMemo(</span>
-<span class="fstat-no" title="function not covered" >    ()</span> =&gt; <span class="cstat-no" title="statement not covered" >detectSurcharges(transactions),</span>
-    [transactions],
-  );
+  const surchargeData = <span class="cstat-no" title="statement not covered" >useMemo(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    if (!_hasHydrated) <span class="cstat-no" title="statement not covered" >return { total: 0, transactions: [] };</span></span>
+<span class="cstat-no" title="statement not covered" >    return detectSurcharges(transactions);</span>
+  }, [transactions, _hasHydrated]);
 &nbsp;
   // Subscription Slayer
-  const subscriptions = <span class="cstat-no" title="statement not covered" >useMemo(</span>
-<span class="fstat-no" title="function not covered" >    ()</span> =&gt; <span class="cstat-no" title="statement not covered" >detectSubscriptions(transactions),</span>
-    [transactions],
-  );
+  const subscriptions = <span class="cstat-no" title="statement not covered" >useMemo(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    if (!_hasHydrated) <span class="cstat-no" title="statement not covered" >return [];</span></span>
+<span class="cstat-no" title="statement not covered" >    return detectSubscriptions(transactions);</span>
+  }, [transactions, _hasHydrated]);
 &nbsp;
   // Grocery Inflation (last 12 months)
   const groceryTrend = <span class="cstat-no" title="statement not covered" >useMemo(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    if (!_hasHydrated) <span class="cstat-no" title="statement not covered" >return [];</span></span>
     const months: { month: string; total: number }[] = <span class="cstat-no" title="statement not covered" >[];</span>
     const now = <span class="cstat-no" title="statement not covered" >new Date();</span>
 &nbsp;
@@ -637,7 +640,7 @@ export default function <span class="fstat-no" title="function not covered" >Ins
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-31T06:31:58.433Z
+                at 2026-01-31T08:12:55.376Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

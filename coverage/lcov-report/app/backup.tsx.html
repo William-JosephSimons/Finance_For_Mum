@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/62</span>
+                <span class='fraction'>0/64</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/14</span>
+                <span class='fraction'>0/16</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/62</span>
+                <span class='fraction'>0/64</span>
             </div>
         
             
@@ -322,7 +322,11 @@
 <a name='L257'></a><a href='#L257'>257</a>
 <a name='L258'></a><a href='#L258'>258</a>
 <a name='L259'></a><a href='#L259'>259</a>
-<a name='L260'></a><a href='#L260'>260</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L260'></a><a href='#L260'>260</a>
+<a name='L261'></a><a href='#L261'>261</a>
+<a name='L262'></a><a href='#L262'>262</a>
+<a name='L263'></a><a href='#L263'>263</a>
+<a name='L264'></a><a href='#L264'>264</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -436,6 +440,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -598,13 +606,13 @@ import * as Clipboard from "expo-clipboard";
 import { useAppStore } from "@/lib/store";
 &nbsp;
 export default function <span class="fstat-no" title="function not covered" >BackupScreen(</span>) {
-  const store = <span class="cstat-no" title="statement not covered" >useAppStore();</span>
+  const { exportState, importState, reset, _hasHydrated } = <span class="cstat-no" title="statement not covered" >useAppStore();</span>
   const [isResetting, setIsResetting] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
   const [isRestoring, setIsRestoring] = <span class="cstat-no" title="statement not covered" >useState(false);</span>
 &nbsp;
   const handleExport = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >as</span>ync () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    try {</span>
-      const data = <span class="cstat-no" title="statement not covered" >store.exportState();</span>
+      const data = <span class="cstat-no" title="statement not covered" >exportState();</span>
       const json = <span class="cstat-no" title="statement not covered" >JSON.stringify(data, null, 2);</span>
       const fileName = <span class="cstat-no" title="statement not covered" >`true-north-backup-${new Date().toISOString().split("T")[0]}.json`;</span>
 &nbsp;
@@ -667,7 +675,7 @@ export default function <span class="fstat-no" title="function not covered" >Bac
 <span class="cstat-no" title="statement not covered" >          throw new Error("Invalid backup format");</span>
         }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        store.importState(data);</span>
+<span class="cstat-no" title="statement not covered" >        importState(data);</span>
 <span class="cstat-no" title="statement not covered" >        setIsRestoring(false);</span>
         // Using a simpler alert here as it's just success, but even here we could use state if needed
         // For now let's hope success alert works or just navigate
@@ -684,7 +692,7 @@ export default function <span class="fstat-no" title="function not covered" >Bac
   };
 &nbsp;
   const handleCopyDebug = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >as</span>ync () =&gt; {</span>
-    const data = <span class="cstat-no" title="statement not covered" >store.exportState();</span>
+    const data = <span class="cstat-no" title="statement not covered" >exportState();</span>
 <span class="cstat-no" title="statement not covered" >    await Clipboard.setStringAsync(JSON.stringify(data, null, 2));</span>
 <span class="cstat-no" title="statement not covered" >    Alert.alert("Copied", "Raw data copied to clipboard");</span>
   };
@@ -694,10 +702,14 @@ export default function <span class="fstat-no" title="function not covered" >Bac
   };
 &nbsp;
   const confirmReset = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    store.reset();</span>
+<span class="cstat-no" title="statement not covered" >    reset();</span>
 <span class="cstat-no" title="statement not covered" >    setIsResetting(false);</span>
 <span class="cstat-no" title="statement not covered" >    router.replace("/(tabs)");</span>
   };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  if (!_hasHydrated) {</span>
+<span class="cstat-no" title="statement not covered" >    return null;</span>
+  }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;ScrollView className="flex-1 bg-surface dark:bg-surface-dark"&gt;
@@ -705,7 +717,7 @@ export default function <span class="fstat-no" title="function not covered" >Bac
       &lt;View className="px-6 pt-16 pb-4 flex-row items-center"&gt;
         &lt;Pressable
           onPress={<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >router.back()}</span>
-          className="mr-4 p-2"
+          className="mr-4 p-2 active:opacity-60"
         &gt;
           &lt;Text className="text-accent-blue text-lg font-bold"&gt;← Back&lt;/Text&gt;
         &lt;/Pressable&gt;
@@ -728,7 +740,7 @@ export default function <span class="fstat-no" title="function not covered" >Bac
         {/* Export */}
         &lt;Pressable
           onPress={handleExport}
-          className="bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark rounded-3xl p-6 active:opacity-80"
+          className="bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark rounded-3xl p-6 active:bg-surface-subtle dark:active:bg-accent-dark/5"
         &gt;
           &lt;Text className="text-accent dark:text-accent-dark font-bold text-xl mb-1"&gt;
             Download Backup
@@ -742,7 +754,7 @@ export default function <span class="fstat-no" title="function not covered" >Bac
         {!isRestoring ?
           &lt;Pressable
             onPress={handleImport}
-            className="bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark rounded-3xl p-6 active:opacity-80"
+            className="bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark rounded-3xl p-6 active:bg-surface-subtle dark:active:bg-accent-dark/5"
           &gt;
             &lt;Text className="text-accent dark:text-accent-dark font-bold text-xl mb-1"&gt;
               Restore from Backup
@@ -761,7 +773,7 @@ export default function <span class="fstat-no" title="function not covered" >Bac
             &lt;View className="flex-row gap-3"&gt;
               &lt;Pressable
                 onPress={<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >setIsRestoring(false)}</span>
-                className="flex-1 py-4 rounded-2xl items-center bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark"
+                className="flex-1 py-4 rounded-2xl items-center bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark active:bg-surface-subtle"
               &gt;
                 &lt;Text className="text-accent dark:text-accent-dark font-bold"&gt;
                   Cancel
@@ -785,7 +797,7 @@ export default function <span class="fstat-no" title="function not covered" >Bac
           {!isResetting ?
             &lt;Pressable
               onPress={handleReset}
-              className="bg-negative/5 dark:bg-negative/10 border border-negative/20 rounded-3xl p-6 active:opacity-80"
+              className="bg-negative/5 dark:bg-negative/10 border border-negative/20 rounded-3xl p-6 active:bg-negative/10"
             &gt;
               &lt;Text className="text-negative font-bold text-xl mb-1"&gt;
                 Reset Account
@@ -804,7 +816,7 @@ export default function <span class="fstat-no" title="function not covered" >Bac
               &lt;View className="flex-row gap-3"&gt;
                 &lt;Pressable
                   onPress={<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >setIsResetting(false)}</span>
-                  className="flex-1 py-4 rounded-2xl items-center bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark"
+                  className="flex-1 py-4 rounded-2xl items-center bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark active:bg-surface-subtle"
                 &gt;
                   &lt;Text className="text-accent dark:text-accent-dark font-bold"&gt;
                     Cancel
@@ -847,7 +859,7 @@ export default function <span class="fstat-no" title="function not covered" >Bac
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-31T06:31:58.433Z
+                at 2026-01-31T08:12:55.376Z
             </div>
         <script src="../prettify.js"></script>
         <script>

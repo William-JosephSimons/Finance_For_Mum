@@ -108,7 +108,7 @@ export default function ImportScreen() {
       <View className="px-6 pt-16 pb-4 flex-row items-center">
         <Pressable
           onPress={() => router.back()}
-          className="mr-4 p-2"
+          className="mr-4 p-2 active:opacity-60"
         >
           <Text className="text-accent-blue text-lg font-bold">← Back</Text>
         </Pressable>
@@ -172,7 +172,7 @@ export default function ImportScreen() {
           className={`py-6 rounded-[24px] items-center ${
             isLoading ?
               "bg-border dark:bg-border-dark"
-            : "bg-accent dark:bg-accent-dark"
+            : "bg-accent dark:bg-accent-dark active:opacity-80"
           }`}
         >
           <Text
@@ -220,7 +220,7 @@ export default function ImportScreen() {
 
           <Pressable
             onPress={handleDone}
-            className="mt-6 py-5 rounded-[20px] items-center bg-positive"
+            className="mt-6 py-5 rounded-[20px] items-center bg-positive active:opacity-80"
           >
             <Text className="text-white text-lg font-bold">Done</Text>
           </Pressable>

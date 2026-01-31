@@ -32,24 +32,41 @@ export function calculateSafeBalance(
   savingsBuckets: number,
   transactions: Transaction[],
   recurringPatterns: RecurringPattern[],
+  today = new Date(),
 ): SafeBalanceResult {
-  const today = new Date();
-  const horizon = addDays(today, 14);
+  const horizon = addDays(today, 30); // Extended to 30 days
 
   const upcomingBills: UpcomingBill[] = [];
 
   // Project each recurring pattern
   recurringPatterns.forEach((pattern) => {
     // Calculate next occurrence
-    const thisMonthDate = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      pattern.dayOfMonth,
-    );
-    let nextDue = thisMonthDate;
+    // Use setDate to safely handle month transitions
+    let nextDue = new Date(today.getFullYear(), today.getMonth(), pattern.dayOfMonth);
 
-    if (isBefore(thisMonthDate, today)) {
-      // Already passed this month, use next month
+    // If the date doesn't exist in this month (e.g., Feb 30),
+    // JS Date will roll it over to next month. We might want to cap it.
+    // But for most bills (28th, etc) it works fine.
+
+    // Check if this month's bill was already paid
+    // We look for transactions with same keyword/merchant in this month
+    const wasPaidThisMonth = transactions.some((t) => {
+      if (t.amount >= 0) return false;
+      const tDate = new Date(t.date);
+      const isSameMonth =
+        tDate.getMonth() === today.getMonth() &&
+        tDate.getFullYear() === today.getFullYear();
+
+      if (!isSameMonth) return false;
+
+      // Match by merchant name or keyword (first 15 chars)
+      const tKey =
+        t.merchantName || t.description.slice(0, 15).toUpperCase().trim();
+      return tKey === pattern.keyword;
+    });
+
+    if (isBefore(nextDue, today) || wasPaidThisMonth) {
+      // Already passed this month OR already paid, use next month
       nextDue = new Date(
         today.getFullYear(),
         today.getMonth() + 1,
@@ -57,7 +74,8 @@ export function calculateSafeBalance(
       );
     }
 
-    if (isBefore(nextDue, horizon) && isAfter(nextDue, today)) {
+    // Check if it's within our 30-day horizon
+    if (isBefore(nextDue, horizon)) {
       upcomingBills.push({
         description: pattern.keyword,
         amount: pattern.averageAmount,

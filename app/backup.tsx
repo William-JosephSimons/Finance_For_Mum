@@ -126,7 +126,7 @@ export default function BackupScreen() {
       <View className="px-6 pt-16 pb-4 flex-row items-center">
         <Pressable
           onPress={() => router.back()}
-          className="mr-4 p-2"
+          className="mr-4 p-2 active:opacity-60"
         >
           <Text className="text-accent-blue text-lg font-bold">← Back</Text>
         </Pressable>
@@ -149,7 +149,7 @@ export default function BackupScreen() {
         {/* Export */}
         <Pressable
           onPress={handleExport}
-          className="bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark rounded-3xl p-6"
+          className="bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark rounded-3xl p-6 active:bg-surface-subtle dark:active:bg-accent-dark/5"
         >
           <Text className="text-accent dark:text-accent-dark font-bold text-xl mb-1">
             Download Backup
@@ -163,7 +163,7 @@ export default function BackupScreen() {
         {!isRestoring ?
           <Pressable
             onPress={handleImport}
-            className="bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark rounded-3xl p-6"
+            className="bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark rounded-3xl p-6 active:bg-surface-subtle dark:active:bg-accent-dark/5"
           >
             <Text className="text-accent dark:text-accent-dark font-bold text-xl mb-1">
               Restore from Backup
@@ -182,7 +182,7 @@ export default function BackupScreen() {
             <View className="flex-row gap-3">
               <Pressable
                 onPress={() => setIsRestoring(false)}
-                className="flex-1 py-4 rounded-2xl items-center bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark"
+                className="flex-1 py-4 rounded-2xl items-center bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark active:bg-surface-subtle"
               >
                 <Text className="text-accent dark:text-accent-dark font-bold">
                   Cancel
@@ -190,7 +190,7 @@ export default function BackupScreen() {
               </Pressable>
               <Pressable
                 onPress={confirmImport}
-                className="flex-1 py-4 rounded-2xl items-center bg-negative"
+                className="flex-1 py-4 rounded-2xl items-center bg-negative active:opacity-80"
               >
                 <Text className="text-white font-bold">Yes, Restore</Text>
               </Pressable>
@@ -206,7 +206,7 @@ export default function BackupScreen() {
           {!isResetting ?
             <Pressable
               onPress={handleReset}
-              className="bg-negative/5 dark:bg-negative/10 border border-negative/20 rounded-3xl p-6"
+              className="bg-negative/5 dark:bg-negative/10 border border-negative/20 rounded-3xl p-6 active:bg-negative/10"
             >
               <Text className="text-negative font-bold text-xl mb-1">
                 Reset Account
@@ -225,7 +225,7 @@ export default function BackupScreen() {
               <View className="flex-row gap-3">
                 <Pressable
                   onPress={() => setIsResetting(false)}
-                  className="flex-1 py-4 rounded-2xl items-center bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark"
+                  className="flex-1 py-4 rounded-2xl items-center bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark active:bg-surface-subtle"
                 >
                   <Text className="text-accent dark:text-accent-dark font-bold">
                     Cancel
@@ -233,7 +233,7 @@ export default function BackupScreen() {
                 </Pressable>
                 <Pressable
                   onPress={confirmReset}
-                  className="flex-1 py-4 rounded-2xl items-center bg-negative"
+                  className="flex-1 py-4 rounded-2xl items-center bg-negative active:opacity-80"
                 >
                   <Text className="text-white font-bold">Wipe Data</Text>
                 </Pressable>
@@ -245,7 +245,7 @@ export default function BackupScreen() {
         {/* Debug */}
         <Pressable
           onPress={handleCopyDebug}
-          className="mt-4 py-4 items-center"
+          className="mt-4 py-4 items-center active:opacity-60"
         >
           <Text className="text-muted dark:text-muted-dark text-sm font-medium">
             Copy Raw Data (Debug)

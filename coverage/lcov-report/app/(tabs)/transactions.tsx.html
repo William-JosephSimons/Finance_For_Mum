@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">52.3% </span>
+                <span class="strong">53.03% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>34/65</span>
+                <span class='fraction'>35/66</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">53.06% </span>
+                <span class="strong">53.84% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>26/49</span>
+                <span class='fraction'>28/52</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">54.23% </span>
+                <span class="strong">55% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>32/59</span>
+                <span class='fraction'>33/60</span>
             </div>
         
             
@@ -460,7 +460,10 @@
 <a name='L395'></a><a href='#L395'>395</a>
 <a name='L396'></a><a href='#L396'>396</a>
 <a name='L397'></a><a href='#L397'>397</a>
-<a name='L398'></a><a href='#L398'>398</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L398'></a><a href='#L398'>398</a>
+<a name='L399'></a><a href='#L399'>399</a>
+<a name='L400'></a><a href='#L400'>400</a>
+<a name='L401'></a><a href='#L401'>401</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -527,8 +530,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -922,16 +928,19 @@ export default function TransactionsScreen() {
   const handleCategorize = (category: string) =&gt; {
     <span class="missing-if-branch" title="if path not taken" >I</span>if (!selectedTxn) <span class="cstat-no" title="statement not covered" >return;</span>
 &nbsp;
-    // Suggest recurring nature based on category
+    // Only suggest recurring if the transaction is currently uncategorized
+    // to avoid overwriting manual user overrides in the same session
     const suggestedRecurring =
-      category === "Utilities" ||
-      category === "Subscriptions";
+      (category === "Utilities" || category === "Subscriptions") &amp;&amp;
+<span class="branch-2 cbranch-no" title="branch not covered" >      selectedTxn.category === "Uncategorized";</span>
+    
+    const finalRecurring = selectedTxn.isRecurring || suggestedRecurring;
 &nbsp;
     // Update local state immediately
-    setIsRecurring(suggestedRecurring);
+    setIsRecurring(finalRecurring);
 &nbsp;
     // Update the transaction in store
-    updateTransaction(selectedTxn.id, { category, isRecurring: suggestedRecurring });
+    updateTransaction(selectedTxn.id, { category, isRecurring: finalRecurring });
 &nbsp;
     // Create rule if "always apply" is checked
     <span class="missing-if-branch" title="if path not taken" >I</span>if (alwaysApply) {
@@ -946,7 +955,7 @@ export default function TransactionsScreen() {
     }
 &nbsp;
     // Update local selected transaction state
-    setSelectedTxn({ ...selectedTxn, category, isRecurring: suggestedRecurring });
+    setSelectedTxn({ ...selectedTxn, category, isRecurring: finalRecurring });
   };
 &nbsp;
   const handleDelete = <span class="fstat-no" title="function not covered" >()</span> =&gt; {
@@ -1009,7 +1018,7 @@ export default function TransactionsScreen() {
                     setSelectedTxn(txn);
                     setIsRecurring(txn.isRecurring);
                   }}
-                  className={`px-4 py-5 flex-row items-center ${
+                  className={`px-4 py-5 flex-row items-center active:bg-surface-subtle dark:active:bg-accent-dark/10 ${
                     index &lt; txns.length - 1 ?
 <span class="branch-0 cbranch-no" title="branch not covered" >                      "border-b border-border dark:border-border-dark"</span>
                     : ""
@@ -1261,7 +1270,7 @@ export default function TransactionsScreen() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-31T06:31:58.433Z
+                at 2026-01-31T08:12:55.376Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

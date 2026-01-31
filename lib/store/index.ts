@@ -144,16 +144,10 @@ export const useAppStore = create<AppState & AppActions>()(
         }),
 
       reset: () =>
-        set((state) => {
-          state.transactions = [];
-          state.rules = [];
-          state.bankBalance = 0;
-          state.savingsBuckets = 0;
-          state.hasSeenWelcome = false;
-          state.lastBackupDate = null;
-          state.isAnalyzing = false;
-          // Note: _hasHydrated is NOT reset
-        }),
+        set((state) => ({
+          ...initialState,
+          _hasHydrated: state._hasHydrated,
+        })),
 
       reapplyRules: async () => {
         set((state) => {

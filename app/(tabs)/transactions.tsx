@@ -63,16 +63,19 @@ export default function TransactionsScreen() {
   const handleCategorize = (category: string) => {
     if (!selectedTxn) return;
 
-    // Suggest recurring nature based on category
+    // Only suggest recurring if the transaction is currently uncategorized
+    // to avoid overwriting manual user overrides in the same session
     const suggestedRecurring =
-      category === "Utilities" ||
-      category === "Subscriptions";
+      (category === "Utilities" || category === "Subscriptions") &&
+      selectedTxn.category === "Uncategorized";
+    
+    const finalRecurring = selectedTxn.isRecurring || suggestedRecurring;
 
     // Update local state immediately
-    setIsRecurring(suggestedRecurring);
+    setIsRecurring(finalRecurring);
 
     // Update the transaction in store
-    updateTransaction(selectedTxn.id, { category, isRecurring: suggestedRecurring });
+    updateTransaction(selectedTxn.id, { category, isRecurring: finalRecurring });
 
     // Create rule if "always apply" is checked
     if (alwaysApply) {
@@ -87,7 +90,7 @@ export default function TransactionsScreen() {
     }
 
     // Update local selected transaction state
-    setSelectedTxn({ ...selectedTxn, category, isRecurring: suggestedRecurring });
+    setSelectedTxn({ ...selectedTxn, category, isRecurring: finalRecurring });
   };
 
   const handleDelete = () => {
@@ -150,7 +153,7 @@ export default function TransactionsScreen() {
                     setSelectedTxn(txn);
                     setIsRecurring(txn.isRecurring);
                   }}
-                  className={`px-4 py-5 flex-row items-center ${
+                  className={`px-4 py-5 flex-row items-center active:bg-surface-subtle dark:active:bg-accent-dark/10 ${
                     index < txns.length - 1 ?
                       "border-b border-border dark:border-border-dark"
                     : ""
@@ -350,7 +353,7 @@ export default function TransactionsScreen() {
                   Select Category
                 </Text>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                  <View className="flex-row gap-2">
+                  <View className="flex-row flex-wrap gap-2">
                     {CATEGORIES.map((cat) => (
                       <Pressable
                         key={cat}
