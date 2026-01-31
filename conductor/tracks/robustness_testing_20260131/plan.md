@@ -30,7 +30,7 @@ Focus: Testing the brain of the application—categorization and state transitio
     - [x] Test persistence logic (if applicable) and state reset conditions.
 - [x] Task: Conductor - User Manual Verification 'Phase 2: State Management & Logic Engines' (Protocol in workflow.md)
 
-## Phase 3: UI Components & User Flows (The Surface)
+## Phase 3: UI Components & User Flows (The Surface) [checkpoint: 7f7de5a]
 Focus: Ensuring the visual layer is resilient and correctly reflects the underlying state.
 
 - [x] Task: Screen & Component Coverage (`app/`)
@@ -41,7 +41,7 @@ Focus: Ensuring the visual layer is resilient and correctly reflects the underly
 - [x] Task: End-to-End User Flow Simulations
     - [x] Implement a test representing the "Full Cycle": Import CSV -> See categorized transactions -> Check dashboard totals.
     - [x] Implement a test for "Recurring Bill Management": Identification -> User Override -> State Update.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: UI Components & User Flows' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: UI Components & User Flows' (Protocol in workflow.md)
 
 ## Phase 4: Final Validation & Cleanup
 Focus: Ensuring the global coverage target is met and all "flaky" logic is removed.
