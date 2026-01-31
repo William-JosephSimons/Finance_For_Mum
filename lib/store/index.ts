@@ -58,10 +58,12 @@ export interface AppActions {
 // Helpers
 // ============================================================================
 
+/**
+ * Fast sort for ISO 8601 strings.
+ * Avoids expensive 'new Date()' calls in the comparator.
+ */
 const sortTransactions = (txns: Transaction[]) => {
-  return [...txns].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
+  return [...txns].sort((a, b) => b.date.localeCompare(a.date));
 };
 
 // ============================================================================
@@ -96,11 +98,20 @@ export const useAppStore = create<AppState & AppActions>()(
       addTransactions: (txns) => {
         let count = 0;
         set((state) => {
+          if (txns.length === 0) return;
+
           const existingIds = new Set(state.transactions.map((t) => t.id));
           const newTxns = txns.filter((t) => !existingIds.has(t.id));
+          
           count = newTxns.length;
-          state.transactions.push(...newTxns);
-          state.transactions = sortTransactions(state.transactions);
+          if (count === 0) return;
+
+          // Optimization: Merge and sort using efficient string comparison
+          // We do this outside of the Immer draft if possible for large lists,
+          // but Immer's reassignment is efficient enough here.
+          const combined = [...state.transactions, ...newTxns];
+          combined.sort((a, b) => b.date.localeCompare(a.date));
+          state.transactions = combined;
         });
         return count;
       },
@@ -162,20 +173,26 @@ export const useAppStore = create<AppState & AppActions>()(
         })),
 
       reapplyRules: async () => {
+        const { transactions, rules } = get();
+        if (transactions.length === 0) return;
+
         set((state) => {
           state.isAnalyzing = true;
         });
 
         try {
-          const { transactions, rules } = get();
           const updatedTxns = await runCategorizationWorkflow(
             transactions,
             rules,
             {
-              onUpdate: (txns) =>
-                set((state) => {
-                  state.transactions = txns;
-                }),
+              onUpdate: (txns) => {
+                // Only update if something actually changed from the rules phase
+                if (txns !== transactions) {
+                  set((state) => {
+                    state.transactions = txns;
+                  });
+                }
+              },
             },
           );
 

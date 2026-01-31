@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.45% </span>
+                <span class="strong">96.66% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>21/22</span>
+                <span class='fraction'>29/30</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>20/20</span>
+                <span class='fraction'>25/25</span>
             </div>
         
             
@@ -157,14 +157,7 @@
 <a name='L92'></a><a href='#L92'>92</a>
 <a name='L93'></a><a href='#L93'>93</a>
 <a name='L94'></a><a href='#L94'>94</a>
-<a name='L95'></a><a href='#L95'>95</a>
-<a name='L96'></a><a href='#L96'>96</a>
-<a name='L97'></a><a href='#L97'>97</a>
-<a name='L98'></a><a href='#L98'>98</a>
-<a name='L99'></a><a href='#L99'>99</a>
-<a name='L100'></a><a href='#L100'>100</a>
-<a name='L101'></a><a href='#L101'>101</a>
-<a name='L102'></a><a href='#L102'>102</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L95'></a><a href='#L95'>95</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -201,31 +194,29 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
@@ -234,12 +225,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -252,6 +237,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -302,45 +288,37 @@ export function calculateSafeBalance(
   today = new Date(),
 ): SafeBalanceResult {
   const horizon = addDays(today, 30); // Extended to 30 days
+  const todayMonth = today.getMonth();
+  const todayFullYear = today.getFullYear();
+  const monthStr = today.toISOString().substring(0, 7); // "YYYY-MM"
 &nbsp;
   const upcomingBills: UpcomingBill[] = [];
 &nbsp;
-  // Optimization: Filter this month's expenses once
-  const thisMonthExpenses = transactions.filter((t) =&gt; {
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (t.amount &gt;= 0) <span class="cstat-no" title="statement not covered" >return false;</span>
-    const tDate = new Date(t.date);
-    return (
-      tDate.getMonth() === today.getMonth() &amp;&amp;
-      tDate.getFullYear() === today.getFullYear()
-    );
-  });
+  // Optimization: Identify this month's expenses once using manual loop
+  const thisMonthExpensesKeys = new Set&lt;string&gt;();
+  for (let i = 0; i &lt; transactions.length; i++) {
+    const t = transactions[i];
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (t.amount &gt;= 0) <span class="cstat-no" title="statement not covered" >continue;</span>
+    if (t.date.substring(0, 7) === monthStr) {
+      const tKey = t.merchantName || t.description.slice(0, 15).toUpperCase().trim();
+      thisMonthExpensesKeys.add(tKey);
+    }
+  }
 &nbsp;
   // Project each recurring pattern
-  recurringPatterns.forEach((pattern) =&gt; {
+  for (let i = 0; i &lt; recurringPatterns.length; i++) {
+    const pattern = recurringPatterns[i];
+    
     // Calculate next occurrence
-    // Use setDate to safely handle month transitions
-    let nextDue = new Date(today.getFullYear(), today.getMonth(), pattern.dayOfMonth);
+    let nextDue = new Date(todayFullYear, todayMonth, pattern.dayOfMonth);
 &nbsp;
     // Check if this month's bill was already paid
-    const wasPaidThisMonth = thisMonthExpenses.some((t) =&gt; {
-      // Match by merchant name or keyword (first 15 chars)
-      const tKey =
-        t.merchantName || t.description.slice(0, 15).toUpperCase().trim();
-      return tKey === pattern.keyword;
-    });
-&nbsp;
-    if (wasPaidThisMonth) {
+    if (thisMonthExpensesKeys.has(pattern.keyword)) {
       // Already paid this month, use next month
-      nextDue = new Date(
-        today.getFullYear(),
-        today.getMonth() + 1,
-        pattern.dayOfMonth,
-      );
+      nextDue = new Date(todayFullYear, todayMonth + 1, pattern.dayOfMonth);
     }
 &nbsp;
     // Check if it's within our 30-day horizon
-    // NOTE: If wasPaidThisMonth is false and isBefore(nextDue, today) is true,
-    // the bill is OVERDUE and should be included in the projection.
     <span class="missing-if-branch" title="else path not taken" >E</span>if (isBefore(nextDue, horizon)) {
       upcomingBills.push({
         description: pattern.keyword,
@@ -348,15 +326,16 @@ export function calculateSafeBalance(
         dueDate: nextDue,
       });
     }
-  });
+  }
 &nbsp;
   // Sort by date
   upcomingBills.sort((a, b) =&gt; a.dueDate.getTime() - b.dueDate.getTime());
 &nbsp;
-  const totalUpcomingBills = upcomingBills.reduce(
-    (sum, bill) =&gt; sum + bill.amount,
-    0,
-  );
+  let totalUpcomingBills = 0;
+  for (let i = 0; i &lt; upcomingBills.length; i++) {
+    totalUpcomingBills += upcomingBills[i].amount;
+  }
+  
   const safeBalance = currentBalance - totalUpcomingBills - savingsBuckets;
 &nbsp;
   return {
@@ -373,7 +352,7 @@ export function calculateSafeBalance(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-31T11:21:10.941Z
+                at 2026-01-31T11:34:37.225Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

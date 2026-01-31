@@ -100,6 +100,9 @@ describe("AppStore", () => {
   });
 
   it("should handle reapplyRules workflow", async () => {
+    // Add transaction first so reapplyRules doesn't early return
+    useAppStore.getState().addTransactions([mockTxn]);
+    
     const updatedTxns = [{ ...mockTxn, category: "Categorized" }];
     (runCategorizationWorkflow as jest.Mock).mockResolvedValue(updatedTxns);
 
@@ -112,6 +115,9 @@ describe("AppStore", () => {
   });
 
   it("should handle reapplyRules failure", async () => {
+    // Add transaction first
+    useAppStore.getState().addTransactions([mockTxn]);
+
     (runCategorizationWorkflow as jest.Mock).mockRejectedValue(new Error("Fail"));
     console.error = jest.fn(); // Suppress expected error log
 
