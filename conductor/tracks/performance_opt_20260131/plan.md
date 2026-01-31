@@ -16,7 +16,7 @@ This plan follows the "Tiger Beetle" philosophy, focusing on mechanical sympathy
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Engine Optimization' (Protocol in workflow.md) d4d2cf1
 
 ## Phase 3: UI Rendering & Responsiveness (60fps Target)
-- [ ] Task: Audit and optimize transaction list rendering using virtualization and targeted memoization.
+- [~] Task: Audit and optimize transaction list rendering using virtualization and targeted memoization.
 - [ ] Task: Refactor state selectors in screens to ensure only necessary components re-render on data changes.
 - [ ] Task: Optimize navigation transitions and input feedback to meet the <100ms response target.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: UI Responsiveness' (Protocol in workflow.md)

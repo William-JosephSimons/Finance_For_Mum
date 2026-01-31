@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useState, useMemo, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
+import { useShallow } from "zustand/react/shallow";
 import { formatCurrency } from "@/lib/utils/format";
 import { calculateSafeBalance } from "@/lib/utils/safeBalance";
 import { detectRecurring } from "@/lib/engine/recurring";
@@ -18,13 +19,18 @@ import { detectSurcharges } from "@/lib/utils/surcharges";
 import { Link } from "expo-router";
 
 export default function DashboardScreen() {
-  const {
-    transactions,
-    bankBalance,
-    savingsBuckets,
-    setBankBalance,
-    _hasHydrated,
-  } = useAppStore();
+  const { transactions, bankBalance, savingsBuckets, _hasHydrated } =
+    useAppStore(
+      useShallow((state) => ({
+        transactions: state.transactions,
+        bankBalance: state.bankBalance,
+        savingsBuckets: state.savingsBuckets,
+        _hasHydrated: state._hasHydrated,
+      })),
+    );
+
+  const setBankBalance = useAppStore((state) => state.setBankBalance);
+
   const [isBalanceModalVisible, setIsBalanceModalVisible] = useState(false);
   const [pendingBalance, setPendingBalance] = useState(bankBalance.toString());
   const [isReadyForHeavyCalcs, setIsReadyForHeavyCalcs] = useState(false);

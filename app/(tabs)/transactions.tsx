@@ -1,7 +1,7 @@
 import {
   View,
   Text,
-  FlatList,
+  SectionList,
   TextInput,
   Pressable,
   Modal,
@@ -9,29 +9,132 @@ import {
   Switch,
   Alert,
 } from "react-native";
-import { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { useAppStore, Transaction } from "@/lib/store";
+import { useShallow } from "zustand/react/shallow";
 import { formatCurrency, formatDate } from "@/lib/utils/format";
 import { CATEGORIES, suggestKeyword } from "@/lib/engine/rules";
 
-// Bypass NativeWind's JSX interception for FlatList to avoid columnWrapperStyle issue on web
-class SafeFlatList extends FlatList<any> {
+// Bypass NativeWind's JSX interception for SectionList to avoid columnWrapperStyle issue on web
+class SafeSectionList extends SectionList<any, any> {
   _checkProps(props: any) {
-    // The original _checkProps throws an invariant error if columnWrapperStyle is present 
+    // The original _checkProps throws an invariant error if columnWrapperStyle is present
     // but numColumns is 1. NativeWind v4 sometimes injects this prop.
   }
 }
 
+// ============================================================================
+// Memoized Components
+// ============================================================================
+
+const TransactionItem = React.memo(
+  ({
+    txn,
+    index,
+    isLast,
+    onPress,
+  }: {
+    txn: Transaction;
+    index: number;
+    isLast: boolean;
+    onPress: (txn: Transaction) => void;
+  }) => (
+    <Pressable
+      onPress={() => onPress(txn)}
+      className={`px-4 py-5 flex-row items-center active:bg-surface-subtle dark:active:bg-accent-dark/10 ${
+        !isLast ? "border-b border-border dark:border-border-dark" : ""
+      }`}
+    >
+      {/* Category indicator */}
+      <View
+        className={`w-10 h-10 rounded-full items-center justify-center mr-3 ${
+          txn.category === "Uncategorized" ? "bg-gray-100" : "bg-accent-muted"
+        }`}
+      >
+        <Text className="text-lg">{txn.amount < 0 ? "↑" : "↓"}</Text>
+      </View>
+
+      {/* Details */}
+      <View className="flex-1">
+        <Text
+          className="text-accent dark:text-accent-dark font-semibold text-base"
+          numberOfLines={1}
+        >
+          {txn.description}
+        </Text>
+        <View className="flex-row items-center gap-2 mt-1">
+          <Text className="text-muted dark:text-muted-dark text-xs font-medium">
+            {formatDate(txn.date)}
+          </Text>
+          <Text className="text-muted dark:text-muted-dark opacity-30">•</Text>
+          <Text
+            className={`text-xs font-bold ${
+              txn.category === "Uncategorized"
+                ? "text-muted dark:text-muted-dark"
+                : "text-accent-blue"
+            }`}
+          >
+            {txn.category}
+          </Text>
+
+          {txn.isRecurring && (
+            <>
+              <Text className="text-muted dark:text-muted-dark opacity-30">
+                •
+              </Text>
+              <Text className="text-sm">🔄</Text>
+            </>
+          )}
+        </View>
+      </View>
+
+      {/* Amount */}
+      <Text
+        className={`font-bold text-lg ${
+          txn.amount < 0
+            ? "text-accent dark:text-accent-dark"
+            : "text-positive"
+        }`}
+      >
+        {formatCurrency(txn.amount)}
+      </Text>
+    </Pressable>
+  ),
+);
+
+const MonthHeader = React.memo(({ title }: { title: string }) => (
+  <View className="bg-surface dark:bg-surface-dark pt-6 pb-3">
+    <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase">
+      {new Date(title + "-01").toLocaleDateString("en-AU", {
+        month: "long",
+        year: "numeric",
+      })}
+    </Text>
+  </View>
+));
+
+// ============================================================================
+// Screen Component
+// ============================================================================
+
 export default function TransactionsScreen() {
-  const {
-    transactions,
-    rules,
-    addRule,
-    updateTransaction,
-    deleteTransaction,
-    reapplyRules,
-    isAnalyzing,
-  } = useAppStore();
+  const { transactions, isAnalyzing } = useAppStore(
+    useShallow((state) => ({
+      transactions: state.transactions,
+      isAnalyzing: state.isAnalyzing,
+    })),
+  );
+
+  const { addRule, updateTransaction, deleteTransaction, reapplyRules } =
+    useAppStore(
+      useShallow((state) => ({
+        addRule: state.addRule,
+        updateTransaction: state.updateTransaction,
+        deleteTransaction: state.deleteTransaction,
+        reapplyRules: state.reapplyRules,
+      })),
+    );
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTxn, setSelectedTxn] = useState<Transaction | null>(null);
   const [alwaysApply, setAlwaysApply] = useState(false);
@@ -49,35 +152,43 @@ export default function TransactionsScreen() {
     );
   }, [transactions, searchQuery]);
 
-  // Group by month
-  const groupedTransactions = useMemo(() => {
-    const groups: Record<string, typeof transactions> = {};
+  // Group by month for SectionList
+  const sections = useMemo(() => {
+    const groups: Record<string, Transaction[]> = {};
     filteredTransactions.forEach((txn) => {
       const monthKey = txn.date.substring(0, 7); // YYYY-MM
       if (!groups[monthKey]) groups[monthKey] = [];
       groups[monthKey].push(txn);
     });
-    return Object.entries(groups).sort(([a], [b]) => b.localeCompare(a));
+
+    return Object.entries(groups)
+      .sort(([a], [b]) => b.localeCompare(a))
+      .map(([monthKey, data]) => ({
+        title: monthKey,
+        data,
+      }));
   }, [filteredTransactions]);
+
+  const handlePressItem = useCallback((txn: Transaction) => {
+    setSelectedTxn(txn);
+    setIsRecurring(txn.isRecurring);
+  }, []);
 
   const handleCategorize = (category: string) => {
     if (!selectedTxn) return;
 
-    // Only suggest recurring if the transaction is currently uncategorized
-    // to avoid overwriting manual user overrides in the same session
     const suggestedRecurring =
       (category === "Utilities" || category === "Subscriptions") &&
       selectedTxn.category === "Uncategorized";
-    
+
     const finalRecurring = selectedTxn.isRecurring || suggestedRecurring;
 
-    // Update local state immediately
     setIsRecurring(finalRecurring);
+    updateTransaction(selectedTxn.id, {
+      category,
+      isRecurring: finalRecurring,
+    });
 
-    // Update the transaction in store
-    updateTransaction(selectedTxn.id, { category, isRecurring: finalRecurring });
-
-    // Create rule if "always apply" is checked
     if (alwaysApply) {
       const keyword = suggestKeyword(selectedTxn.description);
       addRule({
@@ -85,11 +196,9 @@ export default function TransactionsScreen() {
         keyword,
         category,
       });
-
       reapplyRules();
     }
 
-    // Update local selected transaction state
     setSelectedTxn({ ...selectedTxn, category, isRecurring: finalRecurring });
   };
 
@@ -119,7 +228,7 @@ export default function TransactionsScreen() {
       </View>
 
       {/* Search */}
-      <View className="px-6 pb-6">
+      <View className="px-6 pb-2">
         <TextInput
           className="bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark rounded-2xl px-5 py-4 text-lg text-accent dark:text-accent-dark"
           placeholder="Search transactions..."
@@ -130,97 +239,30 @@ export default function TransactionsScreen() {
       </View>
 
       {/* Transaction List */}
-      <SafeFlatList
-        data={groupedTransactions}
-        keyExtractor={([monthKey]: [string, any]) => monthKey}
+      <SafeSectionList
+        sections={sections}
+        keyExtractor={(item: Transaction) => item.id}
+        stickySectionHeadersEnabled={false}
         contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 100 }}
-        renderItem={({ item: [monthKey, txns] }: { item: [string, Transaction[]] }) => (
-          <View className="mb-6">
-            {/* Month Header */}
-            <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase mb-3">
-              {new Date(monthKey + "-01").toLocaleDateString("en-AU", {
-                month: "long",
-                year: "numeric",
-              })}
-            </Text>
-
-            {/* Transactions */}
-            <View className="bg-white dark:bg-surface-subtle-dark rounded-3xl border border-border dark:border-border-dark overflow-hidden">
-              {txns.map((txn, index) => (
-                <Pressable
-                  key={txn.id}
-                  onPress={() => {
-                    setSelectedTxn(txn);
-                    setIsRecurring(txn.isRecurring);
-                  }}
-                  className={`px-4 py-5 flex-row items-center active:bg-surface-subtle dark:active:bg-accent-dark/10 ${
-                    index < txns.length - 1 ?
-                      "border-b border-border dark:border-border-dark"
-                    : ""
-                  }`}
-                >
-                  {/* Category indicator */}
-                  <View
-                    className={`w-10 h-10 rounded-full items-center justify-center mr-3 ${
-                      txn.category === "Uncategorized" ?
-                        "bg-gray-100"
-                      : "bg-accent-muted"
-                    }`}
-                  >
-                    <Text className="text-lg">
-                      {txn.amount < 0 ? "↑" : "↓"}
-                    </Text>
-                  </View>
-
-                  {/* Details */}
-                  <View className="flex-1">
-                    <Text
-                      className="text-accent dark:text-accent-dark font-semibold text-base"
-                      numberOfLines={1}
-                    >
-                      {txn.description}
-                    </Text>
-                    <View className="flex-row items-center gap-2 mt-1">
-                      <Text className="text-muted dark:text-muted-dark text-xs font-medium">
-                        {formatDate(txn.date)}
-                      </Text>
-                      <Text className="text-muted dark:text-muted-dark opacity-30">
-                        •
-                      </Text>
-                      <Text
-                        className={`text-xs font-bold ${
-                          txn.category === "Uncategorized" ?
-                            "text-muted dark:text-muted-dark"
-                          : "text-accent-blue"
-                        }`}
-                      >
-                        {txn.category}
-                      </Text>
-
-                      {txn.isRecurring && (
-                        <>
-                          <Text className="text-muted dark:text-muted-dark opacity-30">
-                            •
-                          </Text>
-                          <Text className="text-sm">🔄</Text>
-                        </>
-                      )}
-                    </View>
-                  </View>
-
-                  {/* Amount */}
-                  <Text
-                    className={`font-bold text-lg ${
-                      txn.amount < 0 ?
-                        "text-accent dark:text-accent-dark"
-                      : "text-positive"
-                    }`}
-                  >
-                    {formatCurrency(txn.amount)}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
+        renderSectionHeader={({ section: { title } }) => (
+          <MonthHeader title={title} />
+        )}
+        renderItem={({ item, index, section }) => (
+          <View
+            className={
+              index === 0
+                ? "bg-white dark:bg-surface-subtle-dark rounded-t-3xl border-x border-t border-border dark:border-border-dark overflow-hidden"
+                : index === section.data.length - 1
+                ? "bg-white dark:bg-surface-subtle-dark rounded-b-3xl border-x border-b border-border dark:border-border-dark overflow-hidden"
+                : "bg-white dark:bg-surface-subtle-dark border-x border-border dark:border-border-dark overflow-hidden"
+            }
+          >
+            <TransactionItem
+              txn={item}
+              index={index}
+              isLast={index === section.data.length - 1}
+              onPress={handlePressItem}
+            />
           </View>
         )}
         ListEmptyComponent={
@@ -265,7 +307,7 @@ export default function TransactionsScreen() {
               )}
             </View>
 
-            {isDeleting ?
+            {isDeleting ? (
               <View className="mt-6 bg-negative/5 dark:bg-negative/10 border border-negative/20 rounded-[32px] p-6">
                 <Text className="text-negative font-bold text-lg mb-2 text-center">
                   Delete Transaction?
@@ -290,7 +332,8 @@ export default function TransactionsScreen() {
                   </Pressable>
                 </View>
               </View>
-            : <>
+            ) : (
+              <>
                 <View className="flex-row items-center justify-between mt-6 mb-3 bg-surface-subtle dark:bg-surface-subtle-dark p-4 rounded-2xl border border-border dark:border-border-dark">
                   <View>
                     <Text className="text-accent dark:text-accent-dark font-bold text-sm">
@@ -305,7 +348,9 @@ export default function TransactionsScreen() {
                     onValueChange={(value) => {
                       setIsRecurring(value);
                       if (selectedTxn) {
-                        updateTransaction(selectedTxn.id, { isRecurring: value });
+                        updateTransaction(selectedTxn.id, {
+                          isRecurring: value,
+                        });
                         setSelectedTxn({ ...selectedTxn, isRecurring: value });
                       }
                     }}
@@ -359,16 +404,16 @@ export default function TransactionsScreen() {
                         key={cat}
                         onPress={() => handleCategorize(cat)}
                         className={`px-5 py-4 rounded-2xl border min-w-[100px] items-center justify-center ${
-                          selectedTxn?.category === cat ?
-                            "bg-accent dark:bg-accent-dark border-accent dark:border-accent-dark"
-                          : "bg-surface-subtle dark:bg-surface-subtle-dark border-border dark:border-border-dark"
+                          selectedTxn?.category === cat
+                            ? "bg-accent dark:bg-accent-dark border-accent dark:border-accent-dark"
+                            : "bg-surface-subtle dark:bg-surface-subtle-dark border-border dark:border-border-dark"
                         }`}
                       >
                         <Text
                           className={`font-bold text-base ${
-                            selectedTxn?.category === cat ?
-                              "text-white dark:text-black"
-                            : "text-accent dark:text-accent-dark"
+                            selectedTxn?.category === cat
+                              ? "text-white dark:text-black"
+                              : "text-accent dark:text-accent-dark"
                           }`}
                         >
                           {cat}
@@ -378,7 +423,7 @@ export default function TransactionsScreen() {
                   </View>
                 </ScrollView>
               </>
-            }
+            )}
 
             <Pressable
               onPress={() => {

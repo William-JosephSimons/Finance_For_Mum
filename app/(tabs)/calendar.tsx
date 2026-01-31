@@ -1,6 +1,7 @@
 import { View, Text, ScrollView } from "react-native";
 import { useMemo } from "react";
 import { useAppStore } from "@/lib/store";
+import { useShallow } from "zustand/react/shallow";
 import { formatCurrency, formatDate } from "@/lib/utils/format";
 import { detectRecurring } from "@/lib/engine/recurring";
 import { addDays, isAfter, isBefore, getDate } from "date-fns";
@@ -13,7 +14,13 @@ interface UpcomingBill {
 }
 
 export default function CalendarScreen() {
-  const { transactions, bankBalance, _hasHydrated } = useAppStore();
+  const { transactions, bankBalance, _hasHydrated } = useAppStore(
+    useShallow((state) => ({
+      transactions: state.transactions,
+      bankBalance: state.bankBalance,
+      _hasHydrated: state._hasHydrated,
+    })),
+  );
 
   // Detect recurring patterns
   const recurringPatterns = useMemo(() => {
