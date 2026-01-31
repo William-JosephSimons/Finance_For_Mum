@@ -15,11 +15,11 @@ This plan follows the "Tiger Beetle" philosophy, focusing on mechanical sympathy
 - [x] Task: Implement batching for transaction state updates to prevent redundant UI re-renders. 04ffeea
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Engine Optimization' (Protocol in workflow.md) d4d2cf1
 
-## Phase 3: UI Rendering & Responsiveness (60fps Target)
-- [~] Task: Audit and optimize transaction list rendering using virtualization and targeted memoization.
-- [ ] Task: Refactor state selectors in screens to ensure only necessary components re-render on data changes.
-- [ ] Task: Optimize navigation transitions and input feedback to meet the <100ms response target.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: UI Responsiveness' (Protocol in workflow.md)
+## Phase 3: UI Rendering & Responsiveness (60fps Target) [checkpoint: d12bcdc]
+- [x] Task: Audit and optimize transaction list rendering using virtualization and targeted memoization. d12bcdc
+- [x] Task: Refactor state selectors in screens to ensure only necessary components re-render on data changes. d12bcdc
+- [x] Task: Optimize navigation transitions and input feedback to meet the <100ms response target. d12bcdc
+- [x] Task: Conductor - User Manual Verification 'Phase 3: UI Responsiveness' (Protocol in workflow.md) d12bcdc
 
 ## Phase 4: Integration & LLM Optimization
 - [ ] Task: Batch LLM prompts and optimize Cerebras Cloud SDK usage for faster insight generation.
