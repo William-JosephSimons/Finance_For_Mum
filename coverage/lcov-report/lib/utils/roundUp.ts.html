@@ -25,21 +25,21 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>16/16</span>
+                <span class='fraction'>15/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.88% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>8/9</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
@@ -108,7 +108,14 @@
 <a name='L43'></a><a href='#L43'>43</a>
 <a name='L44'></a><a href='#L44'>44</a>
 <a name='L45'></a><a href='#L45'>45</a>
-<a name='L46'></a><a href='#L46'>46</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -124,31 +131,38 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -164,37 +178,44 @@ export interface RoundUpResult {
 /**
  * Calculates hypothetical round-up savings.
  * For each expense, calculates (Math.ceil(amount) - amount).
+ *
+ * This shows users how much they could save by enabling round-ups
+ * on their transactions (simulated, not actually moving money).
+ *
+ * @example
+ * A $4.30 coffee would round up to $5.00, contributing $0.70 to savings.
  */
 export function calculateRoundUpSavings(
   transactions: Transaction[],
   month: Date = new Date(),
 ): RoundUpResult {
-  const monthStr = month.toISOString().substring(0, 7); // "YYYY-MM"
-  
+  const interval = {
+    start: startOfMonth(month),
+    end: endOfMonth(month),
+  };
+&nbsp;
   let total = 0;
   let count = 0;
 &nbsp;
-  for (let i = 0; i &lt; transactions.length; i++) {
-    const txn = transactions[i];
-    
+  transactions.forEach((txn) =&gt; {
     // Only count expenses (negative amounts)
-    if (txn.amount &gt;= 0) continue;
+    if (txn.amount &gt;= 0) return;
 &nbsp;
-    // String-based date comparison is much faster than date-fns
-    if (txn.date.substring(0, 7) !== monthStr) continue;
+    const txnDate = new Date(txn.date);
+    if (!isWithinInterval(txnDate, interval)) return;
 &nbsp;
-    const absAmount = txn.amount &lt; 0 ? -txn.amount : <span class="branch-1 cbranch-no" title="branch not covered" >txn.amount;</span>
+    const absAmount = Math.abs(txn.amount);
     const roundUp = Math.ceil(absAmount) - absAmount;
 &nbsp;
     // Only count if there's actually something to round up
-    if (roundUp &gt; 0.001) { // Floating point safety
+    if (roundUp &gt; 0) {
       total += roundUp;
       count++;
     }
-  }
+  });
 &nbsp;
   return {
-    total: Math.round(total * 100) / 100,
+    total: Math.round(total * 100) / 100, // Avoid floating point errors
     transactionCount: count,
   };
 }
@@ -205,7 +226,7 @@ export function calculateRoundUpSavings(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-31T11:41:54.155Z
+                at 2026-01-31T12:21:10.885Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

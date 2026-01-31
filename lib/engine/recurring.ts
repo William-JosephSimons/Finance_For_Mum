@@ -27,7 +27,6 @@ export function detectRecurring(
     if (txn.amount >= 0) return;
 
     // Group by merchantName (if available from LLM) or fallback to normalized description
-    // Group by merchantName (if available from LLM) or fallback to normalized description
     const key =
       (txn.merchantName ? txn.merchantName.toUpperCase() : null) ||
       txn.description.slice(0, 15).toUpperCase().trim();

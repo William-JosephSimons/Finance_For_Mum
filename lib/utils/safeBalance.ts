@@ -35,39 +35,46 @@ export function calculateSafeBalance(
   today = new Date(),
 ): SafeBalanceResult {
   const horizon = addDays(today, 30); // Extended to 30 days
-  const todayMonth = today.getMonth();
-  const todayFullYear = today.getFullYear();
-  const monthStr = today.toISOString().substring(0, 7); // "YYYY-MM"
 
   const upcomingBills: UpcomingBill[] = [];
 
-  // Optimization: Identify this month's expenses once using manual loop
-  const thisMonthExpensesKeys = new Set<string>();
-  for (let i = 0; i < transactions.length; i++) {
-    const t = transactions[i];
-    if (t.amount >= 0) continue;
-    if (t.date.substring(0, 7) === monthStr) {
+  // Optimization: Filter this month's expenses once
+  const thisMonthExpenses = transactions.filter((t) => {
+    if (t.amount >= 0) return false;
+    const tDate = new Date(t.date);
+    return (
+      tDate.getMonth() === today.getMonth() &&
+      tDate.getFullYear() === today.getFullYear()
+    );
+  });
+
+  // Project each recurring pattern
+  recurringPatterns.forEach((pattern) => {
+    // Calculate next occurrence
+    // Use setDate to safely handle month transitions
+    let nextDue = new Date(today.getFullYear(), today.getMonth(), pattern.dayOfMonth);
+
+    // Check if this month's bill was already paid
+    const wasPaidThisMonth = thisMonthExpenses.some((t) => {
+      // Match by merchant name or keyword (first 15 chars)
       const tKey =
         (t.merchantName ? t.merchantName.toUpperCase() : null) ||
         t.description.slice(0, 15).toUpperCase().trim();
-      thisMonthExpensesKeys.add(tKey);
-    }
-  }
+      return tKey === pattern.keyword;
+    });
 
-  // Project each recurring pattern
-  for (let i = 0; i < recurringPatterns.length; i++) {
-    const pattern = recurringPatterns[i];
-    
-    // Calculate next occurrence
-    let nextDue = new Date(todayFullYear, todayMonth, pattern.dayOfMonth);
-
-    // Check if this month's bill was already paid
-    if (thisMonthExpensesKeys.has(pattern.keyword)) {
+    if (wasPaidThisMonth) {
       // Already paid this month, use next month
-      nextDue = new Date(todayFullYear, todayMonth + 1, pattern.dayOfMonth);
+      nextDue = new Date(
+        today.getFullYear(),
+        today.getMonth() + 1,
+        pattern.dayOfMonth,
+      );
     }
 
     // Check if it's within our 30-day horizon
+    // NOTE: If wasPaidThisMonth is false and isBefore(nextDue, today) is true,
+    // the bill is OVERDUE and should be included in the projection.
     if (isBefore(nextDue, horizon)) {
       upcomingBills.push({
         description: pattern.keyword,
@@ -75,16 +82,15 @@ export function calculateSafeBalance(
         dueDate: nextDue,
       });
     }
-  }
+  });
 
   // Sort by date
   upcomingBills.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
 
-  let totalUpcomingBills = 0;
-  for (let i = 0; i < upcomingBills.length; i++) {
-    totalUpcomingBills += upcomingBills[i].amount;
-  }
-  
+  const totalUpcomingBills = upcomingBills.reduce(
+    (sum, bill) => sum + bill.amount,
+    0,
+  );
   const safeBalance = currentBalance - totalUpcomingBills - savingsBuckets;
 
   return {

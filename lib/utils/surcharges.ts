@@ -36,36 +36,27 @@ export function detectSurcharges(
   transactions: Transaction[],
   month: Date = new Date(),
 ): SurchargeResult {
-  const monthStr = month.toISOString().substring(0, 7); // "YYYY-MM"
-  const surcharges: Transaction[] = [];
-  let total = 0;
+  const interval = {
+    start: startOfMonth(month),
+    end: endOfMonth(month),
+  };
 
-  for (let i = 0; i < transactions.length; i++) {
-    const txn = transactions[i];
+  const surcharges = transactions.filter((txn) => {
+    const txnDate = new Date(txn.date);
+    if (!isWithinInterval(txnDate, interval)) return false;
 
     // Only expenses
-    if (txn.amount >= 0) continue;
-
-    // Date check
-    if (txn.date.substring(0, 7) !== monthStr) continue;
+    if (txn.amount >= 0) return false;
 
     const upperDesc = txn.description.toUpperCase();
-    let isSurcharge = txn.category === "Merchant Card Fees & Surcharges";
-    
-    if (!isSurcharge) {
-      for (let j = 0; j < SURCHARGE_KEYWORDS.length; j++) {
-        if (upperDesc.includes(SURCHARGE_KEYWORDS[j])) {
-          isSurcharge = true;
-          break;
-        }
-      }
-    }
+    return (
+      SURCHARGE_KEYWORDS.some((kw) =>
+        txn.description.toUpperCase().includes(kw),
+      ) || txn.category === "Merchant Card Fees & Surcharges"
+    );
+  });
 
-    if (isSurcharge) {
-      surcharges.push(txn);
-      total += (txn.amount < 0 ? -txn.amount : txn.amount);
-    }
-  }
+  const total = surcharges.reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
   return {
     total: Math.round(total * 100) / 100,
