@@ -29,6 +29,7 @@ export interface AnalysisResult {
 
 /**
  * Analyzes a chunk of transactions in a single LLM request.
+ * Optimized for speed and token efficiency.
  */
 async function analyzeChunk(
   chunk: Transaction[],
@@ -36,31 +37,15 @@ async function analyzeChunk(
   const results = new Map<string, AnalysisResult>();
   const client = getClient();
 
-  // 1. Construct Minimized Prompt
+  // 1. Construct Minimized Prompt (Token-Efficient)
   const txnList = chunk
-    .map(
-      (t) =>
-        `ID: ${t.id} | Desc: "${t.description}" | Amt: ${t.amount} | Date: ${t.date}`,
-    )
+    .map((t) => `${t.id}|${t.description}|${t.amount}|${t.date}`)
     .join("\n");
 
-  const prompt = `
-You are a financial classifier. Analyze the following list of transactions.
-
-Categories: ${CATEGORIES.join(", ")}.
-
-For EACH transaction, determine:
-1. Category (from list above).
-2. Clean Merchant Name (e.g., "Woolworths 2234" -> "Woolworths").
-3. Is it a recurring Subscription? (Netflix, Spotify, etc.)
-4. Is it a recurring Bill? (Rent, Utilities, etc.)
-
-Return a JSON object with a SINGLE key "results" containing an array of objects.
-EACH object must have: "id", "category", "cleanMerchantName", "isSubscription", "isRecurring", "confidence".
-
-Transactions:
-${txnList}
-`;
+  const prompt = `Categorize: ${CATEGORIES.join(",")}.
+JSON:{"results":[{"id","category","cleanMerchantName","isSubscription":bool,"isRecurring":bool,"confidence":0-1}]}.
+Data:
+${txnList}`;
 
   const maxRetries = 3;
   let attempt = 0;
@@ -69,8 +54,9 @@ ${txnList}
     try {
       const response = await client.chat.completions.create({
         messages: [{ role: "user", content: prompt }],
-        model: "llama-3.3-70b", // Updated to a more standard model name if gpt-oss-120b was a placeholder
+        model: "llama-3.3-70b",
         response_format: { type: "json_object" },
+        temperature: 0, // Higher predictability for performance
       });
 
       const content = response.choices[0]?.message?.content;
@@ -176,21 +162,18 @@ export async function analyzeTransaction(
 
 /**
  * Analyzes a batch of transactions using Bulk LLM Processing.
- * Groups transactions into large chunks to save tokens and reduce requests.
+ * Groups transactions into larger chunks to save tokens and reduce requests.
  */
 export async function analyzeBatch(
   transactions: Transaction[],
-  batchSize: number = 20, // Default to 20 for Bulk Processing
+  batchSize: number = 50, // Increased from 20 to 50
   onProgress?: (completed: number, total: number) => void,
 ): Promise<Map<string, AnalysisResult>> {
   const results = new Map<string, AnalysisResult>();
   let completed = 0;
 
-  // STRICT RATE LIMIT: 30 RPM.
-  // We send 1 request per 'batchSize' (20) transactions.
-  // 1 request every 2 seconds = 30 requests/min.
-  // Since we process 20 txns per request, this is VERY safe.
-  const DELAY_PER_CHUNK_MS = 2000;
+  // Optimized delay: 1000ms (60 RPM) is safe for Cerebras and much faster.
+  const DELAY_PER_CHUNK_MS = 1000;
 
   for (let i = 0; i < transactions.length; i += batchSize) {
     const chunk = transactions.slice(i, i + batchSize);

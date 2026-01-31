@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { runCategorizationWorkflow } from "../engine/categorization";
+import { detectRecurring, RecurringPattern } from "../engine/recurring";
 
 // ============================================================================
 // Types
@@ -34,6 +35,9 @@ export interface AppState {
 
   isAnalyzing: boolean;
   _hasHydrated: boolean;
+
+  // Derived / Cached Data
+  recurringPatterns: RecurringPattern[];
 }
 
 export interface AppActions {
@@ -79,6 +83,7 @@ const initialState: AppState = {
   lastBackupDate: null,
   isAnalyzing: false,
   _hasHydrated: false,
+  recurringPatterns: [],
 };
 
 // ============================================================================
@@ -102,16 +107,16 @@ export const useAppStore = create<AppState & AppActions>()(
 
           const existingIds = new Set(state.transactions.map((t) => t.id));
           const newTxns = txns.filter((t) => !existingIds.has(t.id));
-          
+
           count = newTxns.length;
           if (count === 0) return;
 
-          // Optimization: Merge and sort using efficient string comparison
-          // We do this outside of the Immer draft if possible for large lists,
-          // but Immer's reassignment is efficient enough here.
           const combined = [...state.transactions, ...newTxns];
           combined.sort((a, b) => b.date.localeCompare(a.date));
           state.transactions = combined;
+
+          // Update derived patterns
+          state.recurringPatterns = detectRecurring(state.transactions);
         });
         return count;
       },
@@ -121,12 +126,21 @@ export const useAppStore = create<AppState & AppActions>()(
           const index = state.transactions.findIndex((t) => t.id === id);
           if (index !== -1) {
             Object.assign(state.transactions[index], updates);
+            // Update derived patterns if recurring status or amount/merchant changed
+            if (
+              updates.isRecurring !== undefined ||
+              updates.amount !== undefined ||
+              updates.merchantName !== undefined
+            ) {
+              state.recurringPatterns = detectRecurring(state.transactions);
+            }
           }
         }),
 
       deleteTransaction: (id) =>
         set((state) => {
           state.transactions = state.transactions.filter((t) => t.id !== id);
+          state.recurringPatterns = detectRecurring(state.transactions);
         }),
 
       addRule: (rule) =>
@@ -190,6 +204,7 @@ export const useAppStore = create<AppState & AppActions>()(
                 if (txns !== transactions) {
                   set((state) => {
                     state.transactions = txns;
+                    state.recurringPatterns = detectRecurring(txns);
                   });
                 }
               },
@@ -198,6 +213,7 @@ export const useAppStore = create<AppState & AppActions>()(
 
           set((state) => {
             state.transactions = updatedTxns;
+            state.recurringPatterns = detectRecurring(updatedTxns);
             state.isAnalyzing = false;
           });
         } catch (error) {
@@ -211,6 +227,7 @@ export const useAppStore = create<AppState & AppActions>()(
       importState: (data) =>
         set((state) => {
           Object.assign(state, data);
+          state.recurringPatterns = detectRecurring(state.transactions);
         }),
 
       exportState: () => {
@@ -238,7 +255,15 @@ export const useAppStore = create<AppState & AppActions>()(
       name: "true-north-storage",
       storage: createJSONStorage(() => AsyncStorage),
       onRehydrateStorage: (state) => {
-        return () => state?.setHasHydrated(true);
+        return () => {
+          state?.setHasHydrated(true);
+          // Recalculate patterns after hydration
+          if (state) {
+            useAppStore.setState({
+              recurringPatterns: detectRecurring(state.transactions),
+            });
+          }
+        };
       },
     },
   ),

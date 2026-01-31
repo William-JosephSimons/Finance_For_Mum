@@ -14,19 +14,15 @@ interface UpcomingBill {
 }
 
 export default function CalendarScreen() {
-  const { transactions, bankBalance, _hasHydrated } = useAppStore(
-    useShallow((state) => ({
-      transactions: state.transactions,
-      bankBalance: state.bankBalance,
-      _hasHydrated: state._hasHydrated,
-    })),
-  );
-
-  // Detect recurring patterns
-  const recurringPatterns = useMemo(() => {
-    if (!_hasHydrated) return [];
-    return detectRecurring(transactions);
-  }, [transactions, _hasHydrated]);
+  const { transactions, bankBalance, _hasHydrated, recurringPatterns } =
+    useAppStore(
+      useShallow((state) => ({
+        transactions: state.transactions,
+        bankBalance: state.bankBalance,
+        _hasHydrated: state._hasHydrated,
+        recurringPatterns: state.recurringPatterns,
+      })),
+    );
 
   // Project upcoming bills for next 30 days
   const upcomingBills = useMemo(() => {

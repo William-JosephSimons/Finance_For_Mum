@@ -19,15 +19,21 @@ import { detectSurcharges } from "@/lib/utils/surcharges";
 import { Link } from "expo-router";
 
 export default function DashboardScreen() {
-  const { transactions, bankBalance, savingsBuckets, _hasHydrated } =
-    useAppStore(
-      useShallow((state) => ({
-        transactions: state.transactions,
-        bankBalance: state.bankBalance,
-        savingsBuckets: state.savingsBuckets,
-        _hasHydrated: state._hasHydrated,
-      })),
-    );
+  const {
+    transactions,
+    bankBalance,
+    savingsBuckets,
+    _hasHydrated,
+    recurringPatterns,
+  } = useAppStore(
+    useShallow((state) => ({
+      transactions: state.transactions,
+      bankBalance: state.bankBalance,
+      savingsBuckets: state.savingsBuckets,
+      _hasHydrated: state._hasHydrated,
+      recurringPatterns: state.recurringPatterns,
+    })),
+  );
 
   const setBankBalance = useAppStore((state) => state.setBankBalance);
 
@@ -58,21 +64,22 @@ export default function DashboardScreen() {
     setIsBalanceModalVisible(false);
   };
 
-  // Calculate recurring patterns for safe balance
-  const recurringPatterns = useMemo(() => {
-    if (!isReadyForHeavyCalcs) return [];
-    return detectRecurring(transactions);
-  }, [transactions, isReadyForHeavyCalcs]);
-
   const { safeBalance, upcomingBills } = useMemo(() => {
-    if (!isReadyForHeavyCalcs) return { safeBalance: bankBalance - savingsBuckets, upcomingBills: [] };
+    if (!isReadyForHeavyCalcs)
+      return { safeBalance: bankBalance - savingsBuckets, upcomingBills: [] };
     return calculateSafeBalance(
       bankBalance,
       savingsBuckets,
       transactions,
       recurringPatterns,
     );
-  }, [bankBalance, savingsBuckets, transactions, recurringPatterns, isReadyForHeavyCalcs]);
+  }, [
+    bankBalance,
+    savingsBuckets,
+    transactions,
+    recurringPatterns,
+    isReadyForHeavyCalcs,
+  ]);
 
   // Round-up simulator
   const { total: roundUpSavings } = useMemo(() => {

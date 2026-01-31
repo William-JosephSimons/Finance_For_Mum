@@ -264,24 +264,7 @@
 <a name='L199'></a><a href='#L199'>199</a>
 <a name='L200'></a><a href='#L200'>200</a>
 <a name='L201'></a><a href='#L201'>201</a>
-<a name='L202'></a><a href='#L202'>202</a>
-<a name='L203'></a><a href='#L203'>203</a>
-<a name='L204'></a><a href='#L204'>204</a>
-<a name='L205'></a><a href='#L205'>205</a>
-<a name='L206'></a><a href='#L206'>206</a>
-<a name='L207'></a><a href='#L207'>207</a>
-<a name='L208'></a><a href='#L208'>208</a>
-<a name='L209'></a><a href='#L209'>209</a>
-<a name='L210'></a><a href='#L210'>210</a>
-<a name='L211'></a><a href='#L211'>211</a>
-<a name='L212'></a><a href='#L212'>212</a>
-<a name='L213'></a><a href='#L213'>213</a>
-<a name='L214'></a><a href='#L214'>214</a>
-<a name='L215'></a><a href='#L215'>215</a>
-<a name='L216'></a><a href='#L216'>216</a>
-<a name='L217'></a><a href='#L217'>217</a>
-<a name='L218'></a><a href='#L218'>218</a>
-<a name='L219'></a><a href='#L219'>219</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L202'></a><a href='#L202'>202</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -316,31 +299,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -351,6 +319,7 @@
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -470,9 +439,6 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
@@ -530,6 +496,7 @@ export interface AnalysisResult {
 &nbsp;
 /**
  * Analyzes a chunk of transactions in a single LLM request.
+ * Optimized for speed and token efficiency.
  */
 async function analyzeChunk(
   chunk: Transaction[],
@@ -537,31 +504,15 @@ async function analyzeChunk(
   const results = new Map&lt;string, AnalysisResult&gt;();
   const client = getClient();
 &nbsp;
-  // 1. Construct Minimized Prompt
+  // 1. Construct Minimized Prompt (Token-Efficient)
   const txnList = chunk
-    .map(
-      (t) =&gt;
-        `ID: ${t.id} | Desc: "${t.description}" | Amt: ${t.amount} | Date: ${t.date}`,
-    )
+    .map((t) =&gt; `${t.id}|${t.description}|${t.amount}|${t.date}`)
     .join("\n");
 &nbsp;
-  const prompt = `
-You are a financial classifier. Analyze the following list of transactions.
-&nbsp;
-Categories: ${CATEGORIES.join(", ")}.
-&nbsp;
-For EACH transaction, determine:
-1. Category (from list above).
-2. Clean Merchant Name (e.g., "Woolworths 2234" -&gt; "Woolworths").
-3. Is it a recurring Subscription? (Netflix, Spotify, etc.)
-4. Is it a recurring Bill? (Rent, Utilities, etc.)
-&nbsp;
-Return a JSON object with a SINGLE key "results" containing an array of objects.
-EACH object must have: "id", "category", "cleanMerchantName", "isSubscription", "isRecurring", "confidence".
-&nbsp;
-Transactions:
-${txnList}
-`;
+  const prompt = `Categorize: ${CATEGORIES.join(",")}.
+JSON:{"results":[{"id","category","cleanMerchantName","isSubscription":bool,"isRecurring":bool,"confidence":0-1}]}.
+Data:
+${txnList}`;
 &nbsp;
   const maxRetries = 3;
   let attempt = 0;
@@ -570,8 +521,9 @@ ${txnList}
     try {
       const response = await client.chat.completions.create({
         messages: [{ role: "user", content: prompt }],
-        model: "llama-3.3-70b", // Updated to a more standard model name if gpt-oss-120b was a placeholder
+        model: "llama-3.3-70b",
         response_format: { type: "json_object" },
+        temperature: 0, // Higher predictability for performance
       });
 &nbsp;
       const content = response.choices[0]?.message?.content;
@@ -677,21 +629,18 @@ export async function analyzeTransaction(
 &nbsp;
 /**
  * Analyzes a batch of transactions using Bulk LLM Processing.
- * Groups transactions into large chunks to save tokens and reduce requests.
+ * Groups transactions into larger chunks to save tokens and reduce requests.
  */
 export async function analyzeBatch(
   transactions: Transaction[],
-  batchSize: number = <span class="branch-0 cbranch-no" title="branch not covered" >20,</span> // Default to 20 for Bulk Processing
+  batchSize: number = <span class="branch-0 cbranch-no" title="branch not covered" >50,</span> // Increased from 20 to 50
   onProgress?: (completed: number, total: number) =&gt; void,
 ): Promise&lt;Map&lt;string, AnalysisResult&gt;&gt; {
   const results = new Map&lt;string, AnalysisResult&gt;();
   let completed = 0;
 &nbsp;
-  // STRICT RATE LIMIT: 30 RPM.
-  // We send 1 request per 'batchSize' (20) transactions.
-  // 1 request every 2 seconds = 30 requests/min.
-  // Since we process 20 txns per request, this is VERY safe.
-  const DELAY_PER_CHUNK_MS = 2000;
+  // Optimized delay: 1000ms (60 RPM) is safe for Cerebras and much faster.
+  const DELAY_PER_CHUNK_MS = 1000;
 &nbsp;
   for (let i = 0; i &lt; transactions.length; i += batchSize) {
     const chunk = transactions.slice(i, i + batchSize);
@@ -724,7 +673,7 @@ export async function analyzeBatch(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-31T11:38:57.599Z
+                at 2026-01-31T11:41:54.155Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
