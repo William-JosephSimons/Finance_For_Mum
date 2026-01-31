@@ -22,7 +22,13 @@ export async function runCategorizationWorkflow(
   options?.onUpdate?.(currentTxns);
 
   // 2. Identify remaining Uncategorized for LLM
-  const uncategorized = currentTxns.filter((t) => t.category === "Uncategorized");
+  // Optimized: Using a simple loop for categorization filtering
+  const uncategorized: Transaction[] = [];
+  for (let i = 0; i < currentTxns.length; i++) {
+    if (currentTxns[i].category === "Uncategorized") {
+      uncategorized.push(currentTxns[i]);
+    }
+  }
 
   if (uncategorized.length === 0) {
     return currentTxns;
@@ -36,18 +42,24 @@ export async function runCategorizationWorkflow(
   );
 
   // 4. Merge results back
-  const updatedTxns = currentTxns.map((txn) => {
+  // Optimized: Using a pre-allocated array and loop for merging
+  const numTxns = currentTxns.length;
+  const updatedTxns = new Array(numTxns);
+  
+  for (let i = 0; i < numTxns; i++) {
+    const txn = currentTxns[i];
     const analysis = results.get(txn.id);
     if (analysis) {
-      return {
+      updatedTxns[i] = {
         ...txn,
         category: analysis.category,
         isRecurring: analysis.isSubscription || txn.isRecurring,
         merchantName: analysis.cleanMerchantName || txn.merchantName,
       };
+    } else {
+      updatedTxns[i] = txn;
     }
-    return txn;
-  });
+  }
 
   return updatedTxns;
 }

@@ -1,36 +1,80 @@
 import type { Transaction, Rule } from "../store";
 
 /**
+ * Internal core matcher that avoids object spreading inside the hot loop.
+ * Extracts values from rules to avoid object property access overhead.
+ *
+ * @param descriptionUpper The uppercase transaction description
+ * @param ruleKeywords Array of uppercase rule keywords (must be pre-sorted by length desc)
+ * @param ruleCategories Array of corresponding categories
+ */
+function findMatch(
+  descriptionUpper: string,
+  ruleKeywords: string[],
+  ruleCategories: string[],
+): string | null {
+  for (let i = 0; i < ruleKeywords.length; i++) {
+    if (descriptionUpper.includes(ruleKeywords[i])) {
+      return ruleCategories[i];
+    }
+  }
+  return null;
+}
+
+/**
  * Applies rules to categorize transactions.
  * Rules are matched by substring (case-insensitive).
  * More specific (longer) keywords take precedence.
- *
- * @example
- * Rule: { keyword: "WOOLWORTHS", category: "Groceries" }
- * Transaction: "WOOLWORTHS 1234 SYDNEY" => Categorized as "Groceries"
  */
 export function applyRules(
   transactions: Transaction[],
   rules: Rule[],
 ): Transaction[] {
-  if (!rules.length) return transactions;
+  const numTxns = transactions.length;
+  const numRules = rules.length;
 
-  // Sort rules by keyword length (longest first = most specific)
+  if (numTxns === 0) return transactions;
+  if (numRules === 0) return transactions;
+
+  // 1. Prepare Rules: Sort by keyword length (most specific first)
+  // And extract into flat arrays for hot loop optimization
   const sortedRules = [...rules].sort(
     (a, b) => b.keyword.length - a.keyword.length,
   );
 
-  return transactions.map((txn) => {
+  const keywords = new Array(numRules);
+  const categories = new Array(numRules);
+
+  for (let i = 0; i < numRules; i++) {
+    keywords[i] = sortedRules[i].keyword.toUpperCase();
+    categories[i] = sortedRules[i].category;
+  }
+
+  // 2. Process Transactions
+  const results = new Array(numTxns);
+  let changed = false;
+
+  for (let i = 0; i < numTxns; i++) {
+    const txn = transactions[i];
+
     // Only categorize if currently Uncategorized
-    if (txn.category !== "Uncategorized") return txn;
+    if (txn.category !== "Uncategorized") {
+      results[i] = txn;
+      continue;
+    }
 
-    const upperDesc = txn.description.toUpperCase();
-    const match = sortedRules.find((r) =>
-      upperDesc.includes(r.keyword.toUpperCase()),
-    );
+    const descriptionUpper = txn.description.toUpperCase();
+    const matchedCategory = findMatch(descriptionUpper, keywords, categories);
 
-    return match ? { ...txn, category: match.category } : txn;
-  });
+    if (matchedCategory) {
+      results[i] = { ...txn, category: matchedCategory };
+      changed = true;
+    } else {
+      results[i] = txn;
+    }
+  }
+
+  return changed ? results : transactions;
 }
 
 /**
