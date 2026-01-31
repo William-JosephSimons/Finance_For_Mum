@@ -16,3 +16,4 @@
 ## Development & Testing
 - **Testing:** [Jest](https://jestjs.io/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) - Comprehensive suite with exhaustive unit, integration, and E2E coverage.
 - **Robustness:** >95% line coverage for core logic and state engines, utilizing high-fidelity SDK mocking and resilience testing.
+- **Performance:** Adheres to the "Tiger Beetle" philosophy, prioritizing mechanical sympathy, explicit batching, and O(1)/O(N) operations in hot paths to ensure 60fps responsiveness and instantaneous feedback.

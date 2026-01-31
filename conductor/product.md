@@ -10,6 +10,7 @@ A simple, stress-free mobile application built specifically for my Mum to help h
 - **Stress-Free Tracking:** Provide a simple way to see daily spending and income.
 - **Subscription & Bill Management:** Automatically identify and help manage recurring expenses.
 - **Visual Insights:** Offer clear, visual representations of spending patterns without needing complex spreadsheets.
+- **High-Performance Reliability:** Ensure the application remains instantaneous and responsive even with thousands of transactions, adhering to elite engineering standards.
 
 ## Key Features
 - **Effortless CSV Import:** One-click bank statement imports to eliminate manual data entry.

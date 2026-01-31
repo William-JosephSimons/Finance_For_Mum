@@ -54,7 +54,7 @@ ${txnList}`;
     try {
       const response = await client.chat.completions.create({
         messages: [{ role: "user", content: prompt }],
-        model: "llama-3.3-70b",
+        model: "gpt-oss-120b",
         response_format: { type: "json_object" },
         temperature: 0, // Higher predictability for performance
       });
@@ -172,8 +172,8 @@ export async function analyzeBatch(
   const results = new Map<string, AnalysisResult>();
   let completed = 0;
 
-  // Optimized delay: 1000ms (60 RPM) is safe for Cerebras and much faster.
-  const DELAY_PER_CHUNK_MS = 1000;
+  // Optimized delay: 2000ms (30 RPM) to respect gpt-oss-120b rate limits.
+  const DELAY_PER_CHUNK_MS = 2000;
 
   for (let i = 0; i < transactions.length; i += batchSize) {
     const chunk = transactions.slice(i, i + batchSize);
