@@ -1,0 +1,117 @@
+﻿
+> true-north@1.0.0 test
+> jest llm.test.ts
+
+  console.error
+    LLM Analysis Failed: Error: API Error
+        at Object.<anonymous> (C:\Users\Billy\OneDrive\Desktop\CodeProjects\Mum_Finance\__tests__\llm.test.ts:83:34)
+        at Generator.next (<anonymous>)
+        at asyncGeneratorStep (C:\Users\Billy\OneDrive\Desktop\CodeProjects\Mum_Finance\node_modules\@babel\runtime\helpers\asyncToGenerator.js:3:17)
+        at _next (C:\Users\Billy\OneDrive\Desktop\CodeProjects\Mum_Finance\node_modules\@babel\runtime\helpers\asyncToGenerator.js:17:9)
+        at C:\Users\Billy\OneDrive\Desktop\CodeProjects\Mum_Finance\node_modules\@babel\runtime\helpers\asyncToGenerator.js:22:7
+        at new Promise (<anonymous>)
+        at Object.<anonymous> (C:\Users\Billy\OneDrive\Desktop\CodeProjects\Mum_Finance\node_modules\@babel\runtime\helpers\asyncToGenerator.js:14:12)
+        at Promise.then.completed (C:\Users\Billy\OneDrive\Desktop\CodeProjects\Mum_Finance\node_modules\jest-circus\build\utils.js:298:28)
+        at new Promise (<anonymous>)
+        at callAsyncCircusFn (C:\Users\Billy\OneDrive\Desktop\CodeProjects\Mum_Finance\node_modules\jest-circus\build\utils.js:231:10)
+        at _callCircusTest (C:\Users\Billy\OneDrive\Desktop\CodeProjects\Mum_Finance\node_modules\jest-circus\build\run.js:316:40)
+        at processTicksAndRejections (node:internal/process/task_queues:105:5)
+        at _runTest (C:\Users\Billy\OneDrive\Desktop\CodeProjects\Mum_Finance\node_modules\jest-circus\build\run.js:252:3)
+        at _runTestsForDescribeBlock (C:\Users\Billy\OneDrive\Desktop\CodeProjects\Mum_Finance\node_modules\jest-circus\build\run.js:126:9)
+        at _runTestsForDescribeBlock (C:\Users\Billy\OneDrive\Desktop\CodeProjects\Mum_Finance\node_modules\jest-circus\build\run.js:121:9)
+        at run (C:\Users\Billy\OneDrive\Desktop\CodeProjects\Mum_Finance\node_modules\jest-circus\build\run.js:71:3)
+        at runAndTransformResultsToJestFormat (C:\Users\Billy\OneDrive\Desktop\CodeProjects\Mum_Finance\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+        at jestAdapter (C:\Users\Billy\OneDrive\Desktop\CodeProjects\Mum_Finance\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+        at runTestInternal (C:\Users\Billy\OneDrive\Desktop\CodeProjects\Mum_Finance\node_modules\jest-runner\build\runTest.js:367:16)
+        at runTest (C:\Users\Billy\OneDrive\Desktop\CodeProjects\Mum_Finance\node_modules\jest-runner\build\runTest.js:444:34)
+
+    [0m [90m 77 |[39m     }[33m;[39m
+     [90m 78 |[39m   } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 79 |[39m     console[33m.[39merror([32m"LLM Analysis Failed:"[39m[33m,[39m error)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 80 |[39m     [36mreturn[39m {
+     [90m 81 |[39m       category[33m:[39m [32m"Uncategorized"[39m[33m,[39m
+     [90m 82 |[39m       cleanMerchantName[33m:[39m txn[33m.[39mdescription[33m,[39m[0m
+
+      at error (lib/engine/llm.ts:79:13)
+          at Generator.throw (<anonymous>)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _throw (node_modules/@babel/runtime/helpers/asyncToGenerator.js:20:9)
+
+node.exe : PASS __t
+ests__/llm.test.ts
+At line:1 char:1
++ & "C:\Program Fil
+es\nodejs/node.exe"
+ "C:\Users\Billy\Ap
+pData\Roaming\ ...
++ ~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
+    + CategoryInfo 
+             : No  
+  tSpecified: (P   
+ ASS __tests__/    
+llm.test.ts:St    
+ring) [], Remo    
+teException
+    + FullyQualifi 
+   edErrorId : Na  
+  tiveCommandErr   
+ or
+ 
+  LLM Transaction 
+Analysis
+    ΓêÜ correctly 
+parses valid JSON 
+response (4 ms)
+    ΓêÜ handles 
+invalid category 
+gracefully (1 ms)
+    ΓêÜ handles 
+API failure 
+gracefully (23 ms)
+
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |    2.08 |      1.9 |    0.51 |    2.29 |                   
+ app               |       0 |        0 |       0 |       0 |                   
+  _layout.tsx      |       0 |      100 |       0 |       0 | 7                 
+  backup.tsx       |       0 |        0 |       0 |       0 | 18-223            
+  import.tsx       |       0 |        0 |       0 |       0 | 19-107            
+ app/(tabs)        |       0 |        0 |       0 |       0 |                   
+  _layout.tsx      |       0 |        0 |       0 |       0 | 6-91              
+  calendar.tsx     |       0 |        0 |       0 |       0 | 16-96             
+  index.tsx        |       0 |        0 |       0 |       0 | 20-274            
+  insights.tsx     |       0 |        0 |       0 |       0 | 11-57             
+  payid.tsx        |       0 |        0 |       0 |       0 | 14-226            
+  transactions.tsx |       0 |        0 |       0 |       0 | 27-379            
+ lib/engine        |   12.09 |    13.84 |       4 |   14.28 |                   
+  bayesian.ts      |       0 |        0 |       0 |       0 | 16-180            
+  llm.ts           |   93.33 |       75 |     100 |     100 | 60,72-75          
+  recurring.ts     |       0 |        0 |       0 |       0 | 22-90             
+  rules.ts         |       5 |        0 |       0 |    6.66 | 16-81             
+ lib/parsers       |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 | 28-486            
+ lib/store         |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 | 68-235            
+ lib/utils         |       0 |        0 |       0 |       0 |                   
+  format.ts        |       0 |        0 |       0 |       0 | 8-43              
+  roundUp.ts       |       0 |        0 |       0 |       0 | 23-48             
+  safeBalance.ts   |       0 |        0 |       0 |       0 | 36-78             
+  subscriptions.ts |       0 |        0 |       0 |       0 | 7-131             
+  surcharges.ts    |       0 |        0 |       0 |       0 | 8-57              
+-------------------|---------|----------|---------|---------|-------------------
+Test Suites: 1 
+passed, 1 total
+Tests:       3 
+passed, 3 total
+Snapshots:   0 
+total
+Time:        3.375 
+s
+Ran all test 
+suites matching 
+/llm.test.ts/i.
