@@ -21,8 +21,8 @@ This plan follows the "Tiger Beetle" philosophy, focusing on mechanical sympathy
 - [x] Task: Optimize navigation transitions and input feedback to meet the <100ms response target. d12bcdc
 - [x] Task: Conductor - User Manual Verification 'Phase 3: UI Responsiveness' (Protocol in workflow.md) d12bcdc
 
-## Phase 4: Integration & LLM Optimization
-- [~] Task: Batch LLM prompts and optimize Cerebras Cloud SDK usage for faster insight generation.
-- [ ] Task: Implement a lightweight caching layer for recurring bill calculations and LLM-generated insights.
-- [ ] Task: Final verification of the entire system against the performance sketches and baseline.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Final Verification' (Protocol in workflow.md)
+## Phase 4: Integration & LLM Optimization [checkpoint: 8c3aad4]
+- [x] Task: Batch LLM prompts and optimize Cerebras Cloud SDK usage for faster insight generation. 8c3aad4
+- [x] Task: Implement a lightweight caching layer for recurring bill calculations and LLM-generated insights. 8c3aad4
+- [x] Task: Final verification of the entire system against the performance sketches and baseline. 8c3aad4
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Final Verification' (Protocol in workflow.md) 8c3aad4
