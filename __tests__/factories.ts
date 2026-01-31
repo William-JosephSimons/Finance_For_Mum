@@ -1,4 +1,4 @@
-import { Transaction, Rule, PayIDContact } from "../lib/store";
+import { Transaction, Rule } from "../lib/store";
 
 export const createTransaction = (
   overrides: Partial<Transaction> = {},
@@ -19,18 +19,6 @@ export const createRule = (overrides: Partial<Rule> = {}): Rule => {
     id: Math.random().toString(36).substring(7),
     keyword: "TEST_KEYWORD",
     category: "Test Category",
-    ...overrides,
-  };
-};
-
-export const createPayIDContact = (
-  overrides: Partial<PayIDContact> = {},
-): PayIDContact => {
-  return {
-    id: Math.random().toString(36).substring(7),
-    name: "Test Contact",
-    payId: "test@example.com",
-    type: "Email",
     ...overrides,
   };
 };

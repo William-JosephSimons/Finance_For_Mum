@@ -25,17 +25,9 @@ export interface Rule {
   category: string;
 }
 
-export interface PayIDContact {
-  id: string;
-  name: string;
-  payId: string;
-  type: "Phone" | "Email" | "ABN";
-}
-
 export interface AppState {
   transactions: Transaction[];
   rules: Rule[];
-  contacts: PayIDContact[];
   bankBalance: number;
   savingsBuckets: number;
   hasSeenWelcome: boolean;
@@ -50,8 +42,6 @@ export interface AppActions {
   deleteTransaction: (id: string) => void;
   addRule: (rule: Rule) => void;
   removeRule: (id: string) => void;
-  addContact: (contact: PayIDContact) => void;
-  removeContact: (id: string) => void;
   setBankBalance: (balance: number) => void;
   setSavingsBuckets: (amount: number) => void;
   setHasSeenWelcome: (seen: boolean) => void;
@@ -70,7 +60,6 @@ export interface AppActions {
 const initialState: AppState = {
   transactions: [],
   rules: [],
-  contacts: [],
   bankBalance: 0,
   savingsBuckets: 0,
   hasSeenWelcome: false,
@@ -124,16 +113,6 @@ export const useAppStore = create<AppState & AppActions>()(
       removeRule: (id) =>
         set((state) => {
           state.rules = state.rules.filter((r) => r.id !== id);
-        }),
-
-      addContact: (contact) =>
-        set((state) => {
-          state.contacts.push(contact);
-        }),
-
-      removeContact: (id) =>
-        set((state) => {
-          state.contacts = state.contacts.filter((c) => c.id !== id);
         }),
 
       setBankBalance: (balance) =>
@@ -224,8 +203,6 @@ export const useAppStore = create<AppState & AppActions>()(
           deleteTransaction,
           addRule,
           removeRule,
-          addContact,
-          removeContact,
           setBankBalance,
           setSavingsBuckets,
           setHasSeenWelcome,

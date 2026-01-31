@@ -8,7 +8,6 @@ function TabIcon({ name, focused }: { name: string; focused: boolean }) {
     list: "☰",
     calendar: "📅",
     insights: "📊",
-    contacts: "👥",
   };
 
   return (
@@ -80,15 +79,6 @@ export default function TabLayout() {
           title: "Insights",
           tabBarIcon: ({ focused }) => (
             <TabIcon name="insights" focused={focused} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="payid"
-        options={{
-          title: "PayID",
-          tabBarIcon: ({ focused }) => (
-            <TabIcon name="contacts" focused={focused} />
           ),
         }}
       />
