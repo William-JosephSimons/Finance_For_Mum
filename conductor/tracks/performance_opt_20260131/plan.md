@@ -5,8 +5,8 @@ This plan follows the "Tiger Beetle" philosophy, focusing on mechanical sympathy
 ## Phase 1: Performance Audit & Resource Sketching
 - [x] Task: Conduct back-of-the-envelope sketches for core resources (Network, Disk, Memory, CPU) for the Import, Engine, and UI layers. a98ec02
 - [x] Task: Profile current CSV import and categorization engine performance to establish a baseline. 2040d64
-- [~] Task: Identify "hot paths" and high-allocation zones in the Zustand store and transaction filtering logic.
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Performance Audit' (Protocol in workflow.md)
+- [x] Task: Identify "hot paths" and high-allocation zones in the Zustand store and transaction filtering logic. a5f62f5
+- [~] Task: Conductor - User Manual Verification 'Phase 1: Performance Audit' (Protocol in workflow.md)
 
 ## Phase 2: Data Plane & Engine Optimization (Batching & Mechanical Sympathy)
 - [ ] Task: Refactor `lib/engine/categorization.ts` and `rules.ts` to use batched processing instead of per-transaction calls.
