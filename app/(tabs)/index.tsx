@@ -6,8 +6,9 @@ import {
   Alert,
   Modal,
   TextInput,
+  InteractionManager,
 } from "react-native";
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
 import { formatCurrency } from "@/lib/utils/format";
 import { calculateSafeBalance } from "@/lib/utils/safeBalance";
@@ -17,11 +18,26 @@ import { detectSurcharges } from "@/lib/utils/surcharges";
 import { Link } from "expo-router";
 
 export default function DashboardScreen() {
-  console.log("Dashboard Loaded - PWA Refresh Active");
-  const { transactions, bankBalance, savingsBuckets, setBankBalance } =
-    useAppStore();
+  const {
+    transactions,
+    bankBalance,
+    savingsBuckets,
+    setBankBalance,
+    _hasHydrated,
+  } = useAppStore();
   const [isBalanceModalVisible, setIsBalanceModalVisible] = useState(false);
   const [pendingBalance, setPendingBalance] = useState(bankBalance.toString());
+  const [isReadyForHeavyCalcs, setIsReadyForHeavyCalcs] = useState(false);
+
+  // Stagger calculations to avoid blocking UI thread on startup
+  useEffect(() => {
+    if (_hasHydrated) {
+      const task = InteractionManager.runAfterInteractions(() => {
+        setIsReadyForHeavyCalcs(true);
+      });
+      return () => task.cancel();
+    }
+  }, [_hasHydrated]);
 
   const handleSetBalance = () => {
     setPendingBalance(bankBalance.toString());
@@ -37,22 +53,42 @@ export default function DashboardScreen() {
   };
 
   // Calculate recurring patterns for safe balance
-  const recurringPatterns = detectRecurring(transactions);
-  const { safeBalance, upcomingBills, reservedForSavings } =
-    calculateSafeBalance(
+  const recurringPatterns = useMemo(() => {
+    if (!isReadyForHeavyCalcs) return [];
+    return detectRecurring(transactions);
+  }, [transactions, isReadyForHeavyCalcs]);
+
+  const { safeBalance, upcomingBills } = useMemo(() => {
+    if (!isReadyForHeavyCalcs) return { safeBalance: bankBalance, upcomingBills: [] };
+    return calculateSafeBalance(
       bankBalance,
       savingsBuckets,
       transactions,
       recurringPatterns,
     );
+  }, [bankBalance, savingsBuckets, transactions, recurringPatterns, isReadyForHeavyCalcs]);
 
   // Round-up simulator
-  const { total: roundUpSavings } = calculateRoundUpSavings(transactions);
+  const { total: roundUpSavings } = useMemo(() => {
+    if (!isReadyForHeavyCalcs) return { total: 0 };
+    return calculateRoundUpSavings(transactions);
+  }, [transactions, isReadyForHeavyCalcs]);
 
   // Surcharge detector
-  const { total: surchargesTotal } = detectSurcharges(transactions);
+  const { total: surchargesTotal } = useMemo(() => {
+    if (!isReadyForHeavyCalcs) return { total: 0 };
+    return detectSurcharges(transactions);
+  }, [transactions, isReadyForHeavyCalcs]);
 
   const isPositive = safeBalance >= 0;
+
+  if (!_hasHydrated) {
+    return (
+      <View className="flex-1 bg-surface dark:bg-surface-dark items-center justify-center">
+        <Text className="text-muted font-bold uppercase">Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView
@@ -63,7 +99,7 @@ export default function DashboardScreen() {
       {/* Header */}
       <View className="px-6 pt-16 pb-8 flex-row justify-between items-center">
         <View>
-          <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase tracking-[0.2em]">
+          <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase">
             True North
           </Text>
           <Text className="text-accent dark:text-accent-dark text-2xl font-display mt-1">
@@ -72,7 +108,7 @@ export default function DashboardScreen() {
         </View>
         <Link href="/backup" asChild>
           <Pressable
-            className="w-12 h-12 bg-surface-subtle dark:bg-surface-subtle-dark rounded-full items-center justify-center active:scale-95 transition-transform"
+            className="w-12 h-12 bg-surface-subtle dark:bg-surface-subtle-dark rounded-full items-center justify-center"
             accessibilityRole="button"
             accessibilityLabel="Backup and Restore"
           >
@@ -81,9 +117,9 @@ export default function DashboardScreen() {
         </Link>
       </View>
 
-      {/* Safe Balance Hero Section */}
-      <View className="px-6 py-10 mb-6 mx-6 bg-accent dark:bg-accent-dark rounded-[40px] items-center shadow-2xl shadow-black/10">
-        <Text className="text-accent-dark dark:text-accent text-sm font-semibold mb-3 tracking-[0.1em] opacity-80 uppercase">
+      {/* Safe Balance Hero Section - Removed shadow-2xl for Android stability */}
+      <View className="px-6 py-10 mb-6 mx-6 bg-accent dark:bg-accent-dark rounded-[40px] items-center">
+        <Text className="text-accent-dark dark:text-accent text-sm font-semibold mb-3 opacity-80 uppercase">
           Safe to Spend
         </Text>
         <Text
@@ -104,7 +140,7 @@ export default function DashboardScreen() {
       <View className="px-6 flex-row gap-4 mb-8">
         <Link href="/import" asChild>
           <Pressable
-            className="flex-1 bg-surface-subtle dark:bg-surface-subtle-dark p-6 rounded-3xl items-center border border-border dark:border-border-dark active:scale-95 transition-transform"
+            className="flex-1 bg-surface-subtle dark:bg-surface-subtle-dark p-6 rounded-3xl items-center border border-border dark:border-border-dark"
             accessibilityRole="button"
           >
             <Text className="text-2xl mb-2">📥</Text>
@@ -115,7 +151,7 @@ export default function DashboardScreen() {
         </Link>
         <Pressable
           onPress={handleSetBalance}
-          className="flex-1 bg-surface-subtle dark:bg-surface-subtle-dark p-6 rounded-3xl items-center border border-border dark:border-border-dark active:scale-95 transition-transform"
+          className="flex-1 bg-surface-subtle dark:bg-surface-subtle-dark p-6 rounded-3xl items-center border border-border dark:border-border-dark"
           accessibilityRole="button"
         >
           <Text className="text-2xl mb-2">💰</Text>
@@ -127,12 +163,12 @@ export default function DashboardScreen() {
 
       {/* Insights & Cards */}
       <View className="px-6 gap-6">
-        {/* Current Bank Balance Card */}
-        <View className="bg-white dark:bg-surface-subtle-dark rounded-3xl p-6 border border-border dark:border-border-dark shadow-sm">
-          <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase tracking-widest mb-2">
+        {/* Current Bank Balance Card - Removed shadow-sm for Android stability */}
+        <View className="bg-white dark:bg-surface-subtle-dark rounded-3xl p-6 border border-border dark:border-border-dark">
+          <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase mb-2">
             Bank Balance
           </Text>
-          <Text className="text-balance text-accent dark:text-accent-dark">
+          <Text className="text-size-balance text-accent dark:text-accent-dark">
             {formatCurrency(bankBalance)}
           </Text>
         </View>
@@ -143,7 +179,7 @@ export default function DashboardScreen() {
           <View className="bg-positive-muted/50 dark:bg-positive/10 rounded-3xl p-6 border border-positive/20">
             <View className="flex-row items-center gap-3 mb-2">
               <View className="bg-positive w-2 h-2 rounded-full" />
-              <Text className="text-positive dark:text-positive text-xs font-bold uppercase tracking-widest">
+              <Text className="text-positive dark:text-positive text-xs font-bold uppercase">
                 Round-Up Potential
               </Text>
             </View>
@@ -160,7 +196,7 @@ export default function DashboardScreen() {
             <View className="bg-negative-muted/50 dark:bg-negative/10 rounded-3xl p-6 border border-negative/20">
               <View className="flex-row items-center gap-3 mb-2">
                 <View className="bg-negative w-2 h-2 rounded-full" />
-                <Text className="text-negative dark:text-negative text-xs font-bold uppercase tracking-widest">
+                <Text className="text-negative dark:text-negative text-xs font-bold uppercase">
                   Merchant Surcharges
                 </Text>
               </View>
@@ -247,7 +283,7 @@ export default function DashboardScreen() {
         onRequestClose={() => setIsBalanceModalVisible(false)}
       >
         <View className="flex-1 justify-center items-center bg-black/60 px-6">
-          <View className="bg-white dark:bg-surface-dark w-full rounded-[32px] p-8 shadow-2xl">
+          <View className="bg-white dark:bg-surface-dark w-full rounded-[32px] p-8">
             <Text className="text-accent dark:text-accent-dark text-2xl font-bold mb-2">
               Set Bank Balance
             </Text>
@@ -256,7 +292,7 @@ export default function DashboardScreen() {
             </Text>
 
             <View className="bg-surface-subtle dark:bg-surface-subtle-dark border border-border dark:border-border-dark rounded-2xl px-5 py-4 mb-6">
-              <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase tracking-widest mb-1">
+              <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase mb-1">
                 Amount ($)
               </Text>
               <TextInput
@@ -280,7 +316,7 @@ export default function DashboardScreen() {
               </Pressable>
               <Pressable
                 onPress={saveBalance}
-                className="flex-2 py-4 rounded-2xl items-center bg-accent dark:bg-accent-dark active:scale-95"
+                className="flex-2 py-4 rounded-2xl items-center bg-accent dark:bg-accent-dark"
               >
                 <Text className="text-white dark:text-black font-bold">
                   Update Balance

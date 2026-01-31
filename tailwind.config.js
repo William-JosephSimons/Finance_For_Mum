@@ -3,6 +3,14 @@ module.exports = {
   content: ["./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
+    letterSpacing: {
+      tighter: "-0.5px",
+      tight: "-0.2px",
+      normal: "0",
+      wide: "0.2px",
+      wider: "0.5px",
+      widest: "1px",
+    },
     extend: {
       colors: {
         surface: {
@@ -40,14 +48,8 @@ module.exports = {
         mono: ["JetBrains Mono", "monospace"],
       },
       fontSize: {
-        hero: [
-          "4.5rem",
-          { lineHeight: "1", fontWeight: "800", letterSpacing: "-0.04em" },
-        ],
-        balance: [
-          "3.5rem",
-          { lineHeight: "1.1", fontWeight: "700", letterSpacing: "-0.02em" },
-        ],
+        hero: ["4.5rem", { lineHeight: "1", fontWeight: "800" }],
+        "size-balance": ["3.5rem", { lineHeight: "1.1", fontWeight: "700" }],
         title: ["1.75rem", { lineHeight: "1.2", fontWeight: "700" }],
         subtitle: ["1.125rem", { lineHeight: "1.5", fontWeight: "500" }],
       },

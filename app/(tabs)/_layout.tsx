@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { View, Text } from "react-native";
+import { View, Text, Platform } from "react-native";
 
 // Simple icon components for tabs (no external dependencies)
 function TabIcon({ name, focused }: { name: string; focused: boolean }) {
@@ -30,11 +30,20 @@ export default function TabLayout() {
           height: 90,
           paddingBottom: 30,
           paddingTop: 10,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: -4 },
-          shadowOpacity: 0.05,
-          shadowRadius: 10,
-          elevation: 10,
+          ...Platform.select({
+            ios: {
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: -4 },
+              shadowOpacity: 0.05,
+              shadowRadius: 10,
+            },
+            android: {
+              elevation: 10,
+            },
+            default: {
+              elevation: 10,
+            },
+          }),
         },
         tabBarLabelStyle: {
           fontSize: 11,

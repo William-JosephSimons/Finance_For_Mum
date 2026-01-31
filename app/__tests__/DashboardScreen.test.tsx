@@ -6,6 +6,7 @@ import { useAppStore } from "@/lib/store";
 describe("DashboardScreen", () => {
   beforeEach(() => {
     useAppStore.getState().reset();
+    useAppStore.getState().setHasHydrated(true);
   });
 
   it("should render correctly", () => {

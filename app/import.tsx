@@ -108,7 +108,7 @@ export default function ImportScreen() {
       <View className="px-6 pt-16 pb-4 flex-row items-center">
         <Pressable
           onPress={() => router.back()}
-          className="mr-4 p-2 active:scale-95"
+          className="mr-4 p-2"
         >
           <Text className="text-accent-blue text-lg font-bold">← Back</Text>
         </Pressable>
@@ -119,7 +119,7 @@ export default function ImportScreen() {
 
       {/* Instructions */}
       <View className="px-6 py-4">
-        <View className="bg-surface-subtle dark:bg-surface-subtle-dark border border-border dark:border-border-dark rounded-3xl p-6 shadow-sm">
+        <View className="bg-surface-subtle dark:bg-surface-subtle-dark border border-border dark:border-border-dark rounded-3xl p-6">
           <Text className="text-accent dark:text-accent-dark font-bold text-lg mb-4">
             How to export from your bank:
           </Text>
@@ -147,10 +147,10 @@ export default function ImportScreen() {
 
       {/* Supported Banks */}
       <View className="px-6 py-6">
-        <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase tracking-[0.2em] mb-4">
+        <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase mb-4">
           Supported Banks
         </Text>
-        <View className="flex flex-row flex-wrap gap-3">
+        <View className="flex-row flex-wrap gap-3">
           {["CommBank", "NAB", "Westpac", "ANZ", "Suncorp"].map((bank) => (
             <View
               key={bank}
@@ -169,10 +169,10 @@ export default function ImportScreen() {
         <Pressable
           onPress={handlePickFile}
           disabled={isLoading}
-          className={`py-6 rounded-[24px] items-center shadow-lg ${
+          className={`py-6 rounded-[24px] items-center ${
             isLoading ?
               "bg-border dark:bg-border-dark"
-            : "bg-accent dark:bg-accent-dark active:scale-95 transition-transform"
+            : "bg-accent dark:bg-accent-dark"
           }`}
         >
           <Text
@@ -186,7 +186,7 @@ export default function ImportScreen() {
       {/* Result */}
       {result && (
         <View className="px-6 py-4">
-          <View className="bg-positive-muted/50 dark:bg-positive/10 border border-positive/20 rounded-3xl p-6 shadow-sm">
+          <View className="bg-positive-muted/50 dark:bg-positive/10 border border-positive/20 rounded-3xl p-6">
             <Text className="text-positive font-bold text-xl mb-4">
               ✓ Import Successful
             </Text>
@@ -220,7 +220,7 @@ export default function ImportScreen() {
 
           <Pressable
             onPress={handleDone}
-            className="mt-6 py-5 rounded-[20px] items-center bg-positive active:scale-95 transition-transform"
+            className="mt-6 py-5 rounded-[20px] items-center bg-positive"
           >
             <Text className="text-white text-lg font-bold">Done</Text>
           </Pressable>

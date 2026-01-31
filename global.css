@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  /* Only target Text elements to avoid warnings on View/Pressable */
+  Text {
+    letter-spacing: 0px !important;
+  }
+}

@@ -15,13 +15,13 @@ import * as Clipboard from "expo-clipboard";
 import { useAppStore } from "@/lib/store";
 
 export default function BackupScreen() {
-  const store = useAppStore();
+  const { exportState, importState, reset, _hasHydrated } = useAppStore();
   const [isResetting, setIsResetting] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
 
   const handleExport = async () => {
     try {
-      const data = store.exportState();
+      const data = exportState();
       const json = JSON.stringify(data, null, 2);
       const fileName = `true-north-backup-${new Date().toISOString().split("T")[0]}.json`;
 
@@ -84,7 +84,7 @@ export default function BackupScreen() {
           throw new Error("Invalid backup format");
         }
 
-        store.importState(data);
+        importState(data);
         setIsRestoring(false);
         // Using a simpler alert here as it's just success, but even here we could use state if needed
         // For now let's hope success alert works or just navigate
@@ -101,7 +101,7 @@ export default function BackupScreen() {
   };
 
   const handleCopyDebug = async () => {
-    const data = store.exportState();
+    const data = exportState();
     await Clipboard.setStringAsync(JSON.stringify(data, null, 2));
     Alert.alert("Copied", "Raw data copied to clipboard");
   };
@@ -111,10 +111,14 @@ export default function BackupScreen() {
   };
 
   const confirmReset = () => {
-    store.reset();
+    reset();
     setIsResetting(false);
     router.replace("/(tabs)");
   };
+
+  if (!_hasHydrated) {
+    return null;
+  }
 
   return (
     <ScrollView className="flex-1 bg-surface dark:bg-surface-dark">
@@ -122,7 +126,7 @@ export default function BackupScreen() {
       <View className="px-6 pt-16 pb-4 flex-row items-center">
         <Pressable
           onPress={() => router.back()}
-          className="mr-4 p-2 active:scale-95"
+          className="mr-4 p-2"
         >
           <Text className="text-accent-blue text-lg font-bold">← Back</Text>
         </Pressable>
@@ -145,7 +149,7 @@ export default function BackupScreen() {
         {/* Export */}
         <Pressable
           onPress={handleExport}
-          className="bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark rounded-3xl p-6 active:scale-[0.98] transition-all"
+          className="bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark rounded-3xl p-6"
         >
           <Text className="text-accent dark:text-accent-dark font-bold text-xl mb-1">
             Download Backup
@@ -159,7 +163,7 @@ export default function BackupScreen() {
         {!isRestoring ?
           <Pressable
             onPress={handleImport}
-            className="bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark rounded-3xl p-6 active:scale-[0.98] transition-all"
+            className="bg-white dark:bg-surface-subtle-dark border border-border dark:border-border-dark rounded-3xl p-6"
           >
             <Text className="text-accent dark:text-accent-dark font-bold text-xl mb-1">
               Restore from Backup
@@ -186,7 +190,7 @@ export default function BackupScreen() {
               </Pressable>
               <Pressable
                 onPress={confirmImport}
-                className="flex-1 py-4 rounded-2xl items-center bg-negative active:scale-95"
+                className="flex-1 py-4 rounded-2xl items-center bg-negative"
               >
                 <Text className="text-white font-bold">Yes, Restore</Text>
               </Pressable>
@@ -196,13 +200,13 @@ export default function BackupScreen() {
 
         {/* Reset Section */}
         <View className="mt-8 pt-8 border-t border-border dark:border-border-dark">
-          <Text className="text-negative font-bold text-sm uppercase tracking-widest mb-4 px-2">
+          <Text className="text-negative font-bold text-sm uppercase mb-4 px-2">
             Danger Zone
           </Text>
           {!isResetting ?
             <Pressable
               onPress={handleReset}
-              className="bg-negative/5 dark:bg-negative/10 border border-negative/20 rounded-3xl p-6 active:scale-[0.98] transition-all"
+              className="bg-negative/5 dark:bg-negative/10 border border-negative/20 rounded-3xl p-6"
             >
               <Text className="text-negative font-bold text-xl mb-1">
                 Reset Account
@@ -229,7 +233,7 @@ export default function BackupScreen() {
                 </Pressable>
                 <Pressable
                   onPress={confirmReset}
-                  className="flex-1 py-4 rounded-2xl items-center bg-negative active:scale-95"
+                  className="flex-1 py-4 rounded-2xl items-center bg-negative"
                 >
                   <Text className="text-white font-bold">Wipe Data</Text>
                 </Pressable>
@@ -241,7 +245,7 @@ export default function BackupScreen() {
         {/* Debug */}
         <Pressable
           onPress={handleCopyDebug}
-          className="mt-4 py-4 items-center active:opacity-60"
+          className="mt-4 py-4 items-center"
         >
           <Text className="text-muted dark:text-muted-dark text-sm font-medium">
             Copy Raw Data (Debug)

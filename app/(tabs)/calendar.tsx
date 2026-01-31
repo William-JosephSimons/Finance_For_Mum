@@ -13,16 +13,17 @@ interface UpcomingBill {
 }
 
 export default function CalendarScreen() {
-  const { transactions, bankBalance } = useAppStore();
+  const { transactions, bankBalance, _hasHydrated } = useAppStore();
 
   // Detect recurring patterns
-  const recurringPatterns = useMemo(
-    () => detectRecurring(transactions),
-    [transactions],
-  );
+  const recurringPatterns = useMemo(() => {
+    if (!_hasHydrated) return [];
+    return detectRecurring(transactions);
+  }, [transactions, _hasHydrated]);
 
   // Project upcoming bills for next 30 days
   const upcomingBills = useMemo(() => {
+    if (!_hasHydrated) return [];
     const today = new Date();
     const horizon = addDays(today, 30);
     const bills: UpcomingBill[] = [];
@@ -107,11 +108,11 @@ export default function CalendarScreen() {
 
       {/* Current Balance */}
       <View className="px-6 py-4">
-        <View className="bg-white dark:bg-surface-subtle-dark rounded-3xl p-6 border border-border dark:border-border-dark shadow-sm">
-          <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase tracking-[0.2em] mb-2">
+        <View className="bg-white dark:bg-surface-subtle-dark rounded-3xl p-6 border border-border dark:border-border-dark">
+          <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase mb-2">
             Starting Balance
           </Text>
-          <Text className="text-balance text-accent dark:text-accent-dark">
+          <Text className="text-size-balance text-accent dark:text-accent-dark">
             {formatCurrency(bankBalance)}
           </Text>
         </View>
@@ -122,11 +123,11 @@ export default function CalendarScreen() {
         {billsByWeek.map(([weekLabel, bills]) => (
           <View key={weekLabel} className="mb-6">
             {/* Bills Section */}
-            <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase tracking-[0.2em] mb-4">
+            <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase mb-4">
               {weekLabel}
             </Text>
 
-            <View className="bg-white dark:bg-surface-subtle-dark rounded-3xl border border-border dark:border-border-dark overflow-hidden shadow-sm">
+            <View className="bg-white dark:bg-surface-subtle-dark rounded-3xl border border-border dark:border-border-dark overflow-hidden">
               {bills.map((bill, index) => (
                 <View
                   key={`${bill.description}-${index}`}

@@ -34,6 +34,7 @@ export interface AppState {
   lastBackupDate: string | null;
 
   isAnalyzing: boolean;
+  _hasHydrated: boolean;
 }
 
 export interface AppActions {
@@ -46,6 +47,7 @@ export interface AppActions {
   setSavingsBuckets: (amount: number) => void;
   setHasSeenWelcome: (seen: boolean) => void;
   setLastBackupDate: (date: string) => void;
+  setHasHydrated: (val: boolean) => void;
 
   reset: () => void;
   reapplyRules: () => Promise<void>;
@@ -65,6 +67,7 @@ const initialState: AppState = {
   hasSeenWelcome: false,
   lastBackupDate: null,
   isAnalyzing: false,
+  _hasHydrated: false,
 };
 
 // ============================================================================
@@ -75,6 +78,11 @@ export const useAppStore = create<AppState & AppActions>()(
   persist(
     immer((set, get) => ({
       ...initialState,
+
+      setHasHydrated: (val) =>
+        set((state) => {
+          state._hasHydrated = val;
+        }),
 
       addTransactions: (txns) =>
         set((state) => {
@@ -135,7 +143,17 @@ export const useAppStore = create<AppState & AppActions>()(
           state.lastBackupDate = date;
         }),
 
-      reset: () => set(initialState),
+      reset: () =>
+        set((state) => {
+          state.transactions = [];
+          state.rules = [];
+          state.bankBalance = 0;
+          state.savingsBuckets = 0;
+          state.hasSeenWelcome = false;
+          state.lastBackupDate = null;
+          state.isAnalyzing = false;
+          // Note: _hasHydrated is NOT reset
+        }),
 
       reapplyRules: async () => {
         set((state) => {
@@ -219,6 +237,9 @@ export const useAppStore = create<AppState & AppActions>()(
     {
       name: "true-north-storage",
       storage: createJSONStorage(() => AsyncStorage),
+      onRehydrateStorage: (state) => {
+        return () => state?.setHasHydrated(true);
+      },
     },
   ),
 );

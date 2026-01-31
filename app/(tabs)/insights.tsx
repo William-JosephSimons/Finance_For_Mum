@@ -8,28 +8,29 @@ import { detectSubscriptions } from "@/lib/utils/subscriptions";
 import { subMonths } from "date-fns";
 
 export default function InsightsScreen() {
-  const { transactions } = useAppStore();
+  const { transactions, _hasHydrated } = useAppStore();
 
   // Round-Up Simulator (current month)
-  const roundUpData = useMemo(
-    () => calculateRoundUpSavings(transactions),
-    [transactions],
-  );
+  const roundUpData = useMemo(() => {
+    if (!_hasHydrated) return { total: 0, transactionCount: 0 };
+    return calculateRoundUpSavings(transactions);
+  }, [transactions, _hasHydrated]);
 
   // Surcharge Detector (current month)
-  const surchargeData = useMemo(
-    () => detectSurcharges(transactions),
-    [transactions],
-  );
+  const surchargeData = useMemo(() => {
+    if (!_hasHydrated) return { total: 0, transactions: [] };
+    return detectSurcharges(transactions);
+  }, [transactions, _hasHydrated]);
 
   // Subscription Slayer
-  const subscriptions = useMemo(
-    () => detectSubscriptions(transactions),
-    [transactions],
-  );
+  const subscriptions = useMemo(() => {
+    if (!_hasHydrated) return [];
+    return detectSubscriptions(transactions);
+  }, [transactions, _hasHydrated]);
 
   // Grocery Inflation (last 12 months)
   const groceryTrend = useMemo(() => {
+    if (!_hasHydrated) return [];
     const months: { month: string; total: number }[] = [];
     const now = new Date();
 
@@ -69,7 +70,7 @@ export default function InsightsScreen() {
       <View className="px-6 py-4 gap-6">
         {/* Round-Up Simulator */}
         <View className="bg-positive-muted/50 dark:bg-positive/10 rounded-3xl p-6 border border-positive/20">
-          <Text className="text-positive text-xs font-bold uppercase tracking-[0.2em] mb-1">
+          <Text className="text-positive text-xs font-bold uppercase mb-1">
             💰 Round-Up Simulator
           </Text>
           <Text className="text-3xl font-bold text-accent dark:text-accent-dark mt-2">
@@ -82,7 +83,7 @@ export default function InsightsScreen() {
 
         {/* Surcharge Detector */}
         <View className="bg-negative-muted/50 dark:bg-negative/10 rounded-3xl p-6 border border-negative/20">
-          <Text className="text-negative text-xs font-bold uppercase tracking-[0.2em] mb-1">
+          <Text className="text-negative text-xs font-bold uppercase mb-1">
             💳 Card Fees & Surcharges
           </Text>
           <Text className="text-3xl font-bold text-accent dark:text-accent-dark mt-2">
@@ -95,7 +96,7 @@ export default function InsightsScreen() {
         </View>
 
         {/* Subscription Slayer */}
-        <View className="bg-white dark:bg-surface-subtle-dark rounded-3xl border border-border dark:border-border-dark overflow-hidden shadow-sm">
+        <View className="bg-white dark:bg-surface-subtle-dark rounded-3xl border border-border dark:border-border-dark overflow-hidden">
           <View className="p-6 border-b border-border dark:border-border-dark">
             <Text className="text-accent dark:text-accent-dark font-bold text-lg">
               📺 Subscriptions
@@ -125,7 +126,7 @@ export default function InsightsScreen() {
                     {sub.name}
                   </Text>
                   {sub.priceIncreased && sub.previousAmount && (
-                    <Text className="text-negative text-xs font-bold mt-1 uppercase tracking-wider">
+                    <Text className="text-negative text-xs font-bold mt-1 uppercase">
                       ⚠️ Was {formatCurrency(sub.previousAmount)}
                     </Text>
                   )}
@@ -145,7 +146,7 @@ export default function InsightsScreen() {
         </View>
 
         {/* Grocery Inflation Monitor */}
-        <View className="bg-white dark:bg-surface-subtle-dark rounded-3xl border border-border dark:border-border-dark p-6 shadow-sm">
+        <View className="bg-white dark:bg-surface-subtle-dark rounded-3xl border border-border dark:border-border-dark p-6">
           <Text className="text-accent dark:text-accent-dark font-bold text-lg mb-1">
             🛒 Grocery Spending
           </Text>

@@ -35,6 +35,7 @@ export default function TransactionsScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTxn, setSelectedTxn] = useState<Transaction | null>(null);
   const [alwaysApply, setAlwaysApply] = useState(false);
+  const [isRecurring, setIsRecurring] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   // Filter transactions by search
@@ -62,8 +63,16 @@ export default function TransactionsScreen() {
   const handleCategorize = (category: string) => {
     if (!selectedTxn) return;
 
-    // Update the transaction's category (triggers Bayesian training in store)
-    updateTransaction(selectedTxn.id, { category });
+    // Suggest recurring nature based on category
+    const suggestedRecurring =
+      category === "Utilities" ||
+      category === "Subscriptions";
+
+    // Update local state immediately
+    setIsRecurring(suggestedRecurring);
+
+    // Update the transaction in store
+    updateTransaction(selectedTxn.id, { category, isRecurring: suggestedRecurring });
 
     // Create rule if "always apply" is checked
     if (alwaysApply) {
@@ -74,12 +83,11 @@ export default function TransactionsScreen() {
         category,
       });
 
-      // Retroactively apply to all
       reapplyRules();
     }
 
-    // Update local state to reflect the change visually in the modal
-    setSelectedTxn({ ...selectedTxn, category });
+    // Update local selected transaction state
+    setSelectedTxn({ ...selectedTxn, category, isRecurring: suggestedRecurring });
   };
 
   const handleDelete = () => {
@@ -126,7 +134,7 @@ export default function TransactionsScreen() {
         renderItem={({ item: [monthKey, txns] }: { item: [string, Transaction[]] }) => (
           <View className="mb-6">
             {/* Month Header */}
-            <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase tracking-[0.2em] mb-3">
+            <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase mb-3">
               {new Date(monthKey + "-01").toLocaleDateString("en-AU", {
                 month: "long",
                 year: "numeric",
@@ -134,12 +142,15 @@ export default function TransactionsScreen() {
             </Text>
 
             {/* Transactions */}
-            <View className="bg-white dark:bg-surface-subtle-dark rounded-3xl border border-border dark:border-border-dark overflow-hidden shadow-sm">
+            <View className="bg-white dark:bg-surface-subtle-dark rounded-3xl border border-border dark:border-border-dark overflow-hidden">
               {txns.map((txn, index) => (
                 <Pressable
                   key={txn.id}
-                  onPress={() => setSelectedTxn(txn)}
-                  className={`px-4 py-5 flex-row items-center active:bg-surface-subtle dark:active:bg-accent-dark/10 ${
+                  onPress={() => {
+                    setSelectedTxn(txn);
+                    setIsRecurring(txn.isRecurring);
+                  }}
+                  className={`px-4 py-5 flex-row items-center ${
                     index < txns.length - 1 ?
                       "border-b border-border dark:border-border-dark"
                     : ""
@@ -230,7 +241,7 @@ export default function TransactionsScreen() {
 
             <View className="flex-row justify-between items-start mb-1">
               <View className="flex-1">
-                <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase tracking-widest mb-2">
+                <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase mb-2">
                   Categorize Transaction
                 </Text>
                 <Text className="text-accent dark:text-accent-dark text-xl font-bold mb-1">
@@ -244,7 +255,7 @@ export default function TransactionsScreen() {
               {!isDeleting && (
                 <Pressable
                   onPress={handleDelete}
-                  className="w-12 h-12 bg-negative/10 rounded-full items-center justify-center active:scale-95"
+                  className="w-12 h-12 bg-negative/10 rounded-full items-center justify-center"
                 >
                   <Text className="text-xl">🗑️</Text>
                 </Pressable>
@@ -270,14 +281,36 @@ export default function TransactionsScreen() {
                   </Pressable>
                   <Pressable
                     onPress={confirmDelete}
-                    className="flex-1 py-4 rounded-2xl items-center bg-negative active:scale-95"
+                    className="flex-1 py-4 rounded-2xl items-center bg-negative"
                   >
                     <Text className="text-white font-bold">Yes, Delete</Text>
                   </Pressable>
                 </View>
               </View>
             : <>
-                <View className="flex-row items-center justify-between mt-6 mb-6 bg-surface-subtle dark:bg-surface-subtle-dark p-4 rounded-2xl border border-border dark:border-border-dark">
+                <View className="flex-row items-center justify-between mt-6 mb-3 bg-surface-subtle dark:bg-surface-subtle-dark p-4 rounded-2xl border border-border dark:border-border-dark">
+                  <View>
+                    <Text className="text-accent dark:text-accent-dark font-bold text-sm">
+                      Show on Bills page
+                    </Text>
+                    <Text className="text-muted dark:text-muted-dark text-xs">
+                      Mark as a recurring bill or subscription
+                    </Text>
+                  </View>
+                  <Switch
+                    value={isRecurring}
+                    onValueChange={(value) => {
+                      setIsRecurring(value);
+                      if (selectedTxn) {
+                        updateTransaction(selectedTxn.id, { isRecurring: value });
+                        setSelectedTxn({ ...selectedTxn, isRecurring: value });
+                      }
+                    }}
+                    trackColor={{ false: "#E4E4E7", true: "#10B981" }}
+                  />
+                </View>
+
+                <View className="flex-row items-center justify-between mb-6 bg-surface-subtle dark:bg-surface-subtle-dark p-4 rounded-2xl border border-border dark:border-border-dark">
                   <View>
                     <Text className="text-accent dark:text-accent-dark font-bold text-sm">
                       Always apply to similar
@@ -313,23 +346,23 @@ export default function TransactionsScreen() {
                   />
                 </View>
 
-                <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase tracking-widest mb-4">
+                <Text className="text-muted dark:text-muted-dark text-xs font-bold uppercase mb-4">
                   Select Category
                 </Text>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                  <View className="flex-row flex-wrap gap-2">
+                  <View className="flex-row gap-2">
                     {CATEGORIES.map((cat) => (
                       <Pressable
                         key={cat}
                         onPress={() => handleCategorize(cat)}
-                        className={`px-4 py-3 rounded-2xl border ${
+                        className={`px-5 py-4 rounded-2xl border min-w-[100px] items-center justify-center ${
                           selectedTxn?.category === cat ?
                             "bg-accent dark:bg-accent-dark border-accent dark:border-accent-dark"
                           : "bg-surface-subtle dark:bg-surface-subtle-dark border-border dark:border-border-dark"
                         }`}
                       >
                         <Text
-                          className={`font-bold ${
+                          className={`font-bold text-base ${
                             selectedTxn?.category === cat ?
                               "text-white dark:text-black"
                             : "text-accent dark:text-accent-dark"
@@ -350,7 +383,7 @@ export default function TransactionsScreen() {
                 setAlwaysApply(false);
                 setIsDeleting(false);
               }}
-              className="mt-8 py-5 rounded-2xl items-center bg-accent dark:bg-accent-dark active:scale-95 transition-transform"
+              className="mt-8 py-5 rounded-2xl items-center bg-accent dark:bg-accent-dark"
             >
               <Text className="text-white dark:text-black font-bold">
                 Close
