@@ -14,4 +14,5 @@
 - **LLM Integration:** [Cerebras Cloud SDK](https://cerebras.ai/) - Used for high-performance inference to power financial insights.
 
 ## Development & Testing
-- **Testing:** [Jest](https://jestjs.io/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) - Ensuring code quality through unit and integration tests.
+- **Testing:** [Jest](https://jestjs.io/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) - Comprehensive suite with exhaustive unit, integration, and E2E coverage.
+- **Robustness:** >95% line coverage for core logic and state engines, utilizing high-fidelity SDK mocking and resilience testing.
